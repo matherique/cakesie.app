@@ -1,7 +1,4 @@
 <p align="center">
-  <a href="#">
-    
-  </a>
   <p align="center">
    <img  src="https://raw.githubusercontent.com/matherique/cakesie.app/main/logo.png" alt="Logo">
   </p>
