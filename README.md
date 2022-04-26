@@ -1,2 +1,2 @@
-# cakesie-api
-api to cakesie app 
+# 🍰 Cakesie.app
+
