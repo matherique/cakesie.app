@@ -1,0 +1,23 @@
+version: '3'
+
+services: 
+  database: 
+    container_name: database
+    image: postgres
+    environment:
+      POSTGRES_DB: "sbo"
+      POSTGRES_PASSWORD: "123"
+    ports:
+      - "5432:5432"
+    volumes:
+      - "./sql/:/docker-entrypoint-initdb.d/"
+  api:
+    build: .
+    container_name: api
+    depends_on:
+      - "database"
+    ports:
+      - "3000:3000"
+    environment:
+      APP_PORT: 3000
+      CONNECTION_STRING: postgres://postgres:123@database:5432/sbo?sslmode=disable
