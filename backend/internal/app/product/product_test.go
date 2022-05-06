@@ -12,25 +12,28 @@ import (
 )
 
 type spyRepo struct {
-	called  int
 	resp    error
 	product *models.Product
 }
 
 func (s *spyRepo) Insert(_ context.Context, data *models.Product) error {
 	if s.resp != nil {
-	return s.resp
-}
+		return s.resp
+	}
 	*data = *s.product
 	return nil
 }
 
 func (s *spyRepo) Update(ctx context.Context, id int, data *models.Product) error {
 	if s.resp != nil {
-	return s.resp
-}
+		return s.resp
+	}
 	*data = *s.product
 	return nil
+}
+
+func (s *spyRepo) GetById(ctx context.Context, id int) (*models.Product, error) {
+	return s.product, s.resp
 }
 
 func TestProduct_Create(t *testing.T) {
@@ -138,6 +141,53 @@ func TestProduct_Update(t *testing.T) {
 			test.prepare(repo)
 
 			p, err := app.Update(context.Background(), test.data)
+
+			if diff := cmp.Diff(test.err, err); diff != "" {
+				t.Errorf("expected error to be %v, got: %v \n %v", test.err, err, diff)
+			}
+
+			if diff := cmp.Diff(test.expect, p); diff != "" {
+				t.Errorf("expect product %v, got: %v \n %v", test.expect, p, diff)
+			}
+
+		})
+	}
+}
+
+func TestProduct_Get(t *testing.T) {
+	tt := []struct {
+		name    string
+		id      int
+		expect  *models.Product
+		err     error
+		prepare func(repo *spyRepo)
+	}{
+		{
+			name:    "should return an error if missing id",
+			id:      0,
+			expect:  nil,
+			err:     ErrIdRequired,
+			prepare: func(repo *spyRepo) {},
+		},
+		{
+			name:   "should return an error if repository returns an error",
+			id:     1,
+			expect: nil,
+			err:    errors.NewInternalServerError("custom error"),
+			prepare: func(repo *spyRepo) {
+				repo.resp = errors.NewInternalServerError("custom error")
+			},
+		},
+	}
+
+	for _, test := range tt {
+		t.Run(test.name, func(t *testing.T) {
+			repo := &spyRepo{}
+			app := NewProductApp(repo)
+
+			test.prepare(repo)
+
+			p, err := app.Get(context.Background(), test.id)
 
 			if diff := cmp.Diff(test.err, err); diff != "" {
 				t.Errorf("expected error to be %v, got: %v \n %v", test.err, err, diff)

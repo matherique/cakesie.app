@@ -10,6 +10,7 @@ import (
 type Product interface {
 	Create(ctx context.Context, data *models.Product) (*models.Product, error)
 	Update(ctx context.Context, data *models.Product) (*models.Product, error)
+	Get(ctx context.Context, id int) (*models.Product, error)
 }
 
 type product struct {
@@ -44,4 +45,12 @@ func (p *product) Update(ctx context.Context, data *models.Product) (*models.Pro
 	}
 
 	return data, nil
+}
+
+func (p *product) Get(ctx context.Context, id int) (*models.Product, error) {
+	if id == 0 {
+		return nil, ErrIdRequired
+	}
+
+	return p.repo.GetById(ctx, id)
 }
