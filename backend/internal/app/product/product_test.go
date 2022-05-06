@@ -18,15 +18,19 @@ type spyRepo struct {
 }
 
 func (s *spyRepo) Insert(_ context.Context, data *models.Product) error {
-	s.called++
-	data = s.product
+	if s.resp != nil {
 	return s.resp
+}
+	*data = *s.product
+	return nil
 }
 
 func (s *spyRepo) Update(ctx context.Context, id int, data *models.Product) error {
-	s.called++
-	data = s.product
+	if s.resp != nil {
 	return s.resp
+}
+	*data = *s.product
+	return nil
 }
 
 func TestProduct_Create(t *testing.T) {
@@ -61,11 +65,13 @@ func TestProduct_Create(t *testing.T) {
 			},
 		},
 		{
-			name:    "should return nil if everything is ok",
-			data:    &models.Product{Name: "any_name", Quantity: 1},
-			expect:  &models.Product{Name: "any_name", Quantity: 1},
-			err:     nil,
-			prepare: func(repo *spyRepo) {},
+			name:   "should return nil if everything is ok",
+			data:   &models.Product{Name: "any_name", Quantity: 1},
+			expect: &models.Product{Id: 1, Name: "any_name", Quantity: 1},
+			err:    nil,
+			prepare: func(repo *spyRepo) {
+				repo.product = &models.Product{Id: 1, Name: "any_name", Quantity: 1}
+			},
 		},
 	}
 
@@ -115,11 +121,11 @@ func TestProduct_Update(t *testing.T) {
 		},
 		{
 			name:   "should return nil if everything is ok",
-			data:   &models.Product{Id: 1, Name: "any_name", Quantity: 1},
-			expect: &models.Product{Id: 1, Name: "other_name", Quantity: 1},
+			data:   &models.Product{Id: 1, Name: "any_name"},
+			expect: &models.Product{Id: 1, Name: "any_name", Quantity: 1},
 			err:    nil,
 			prepare: func(repo *spyRepo) {
-				repo.product = &models.Product{Id: 1, Name: "other_name", Quantity: 1}
+				repo.product = &models.Product{Id: 1, Name: "any_name", Quantity: 1}
 			},
 		},
 	}
