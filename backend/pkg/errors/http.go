@@ -1,17 +1,19 @@
 package errors
 
-type HttpError struct {
-	Status  int    `json:"status"`
-	Message string `json:"message"`
+type NotFound string
+
+func (m NotFound) Error() string {
+	return string(m)
 }
 
-func NewHttp(status int, message string) HttpError {
-	return HttpError{
-		Status:  status,
-		Message: message,
-	}
+type BadRequest string
+
+func (m BadRequest) Error() string {
+	return string(m)
 }
 
-func (he HttpError) Error() string {
-	return he.Message
+type InternalServerError string
+
+func (m InternalServerError) Error() string {
+	return string(m)
 }
