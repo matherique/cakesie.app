@@ -1,19 +1,42 @@
 package errors
 
-type NotFound string
+import "net/http"
 
-func (m NotFound) Error() string {
-	return string(m)
+type NotFound struct {
+	Mode    int    `json:"code"`
+	Message string `json:"message"`
 }
 
-type BadRequest string
-
-func (m BadRequest) Error() string {
-	return string(m)
+func (m *NotFound) Error() string {
+	return m.Message
 }
 
-type InternalServerError string
+func NewNotFound(message string) *InternalServerError {
+	return &InternalServerError{http.StatusNotFound, message}
+}
 
-func (m InternalServerError) Error() string {
-	return string(m)
+type BadRequest struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+}
+
+func NewBadRequest(message string) *BadRequest {
+	return &BadRequest{http.StatusBadRequest, message}
+}
+
+func (m *BadRequest) Error() string {
+	return m.Message
+}
+
+type InternalServerError struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+}
+
+func NewInternalServerError(message string) *InternalServerError {
+	return &InternalServerError{http.StatusInternalServerError, message}
+}
+
+func (m *InternalServerError) Error() string {
+	return m.Message
 }
