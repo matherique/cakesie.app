@@ -12,3 +12,12 @@ func validateToInsert(data *models.Product) error {
 
 	return nil
 }
+
+func validateToUpdate(data *models.Product) error {
+	switch 0 {
+	case data.Id:
+		return ErrIdRequired
+	}
+
+	return nil
+}
