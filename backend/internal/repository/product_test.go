@@ -12,9 +12,10 @@ const conString = "postgres://postgres:123@localhost:5432/cakesie?sslmode=disabl
 
 func TestProductRepository_Insert(t *testing.T) {
 	store := store.NewStore(conString).WithDrive("postgres")
+	defer store.Close()
 
 	if err := store.Connect(); err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	repo := NewProductRepository(store)
