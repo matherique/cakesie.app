@@ -103,3 +103,55 @@ func TestProductRepository_GetById(t *testing.T) {
 		t.Fatalf("expected name to be %v, got %v", product, p)
 	}
 }
+
+func TestProductRepository_GetAll(t *testing.T) {
+	repo, con := MakeProductRepository(t)
+
+	defer func(t *testing.T) {
+		clearAll(t, con)
+		con.Close()
+	}(t)
+
+	insertProduct(t, repo)
+
+	p, err := repo.GetAll(context.Background())
+
+	if err != nil {
+		t.Fatalf("expected nil, got %v", err)
+	}
+
+	if p == nil {
+		t.Fatalf("expected product to be not nil, got nil")
+	}
+
+	if len(p) != 1 {
+		t.Fatalf("expected %d products, got %d", 1, len(p))
+	}
+
+}
+
+func TestProductRepository_Search(t *testing.T) {
+	repo, con := MakeProductRepository(t)
+
+	defer func(t *testing.T) {
+		clearAll(t, con)
+		con.Close()
+	}(t)
+
+	insertProduct(t, repo)
+
+	p, err := repo.Search(context.Background(), "any_name")
+
+	if err != nil {
+		t.Fatalf("expected nil, got %v", err)
+	}
+
+	if p == nil {
+		t.Fatalf("expected product to be not nil, got nil")
+	}
+
+	if len(p) != 1 {
+		t.Fatalf("expected %d products, got %d", 1, len(p))
+	}
+
+}

@@ -11,8 +11,8 @@ type Product interface {
 	Create(ctx context.Context, data *models.Product) (*models.Product, error)
 	Update(ctx context.Context, data *models.Product) (*models.Product, error)
 	Get(ctx context.Context, id int) (*models.Product, error)
-	GetAll(ctx context.Context) ([]models.Product, error)
-	Search(ctx context.Context, name string) ([]models.Product, error)
+	GetAll(ctx context.Context) ([]*models.Product, error)
+	Search(ctx context.Context, name string) ([]*models.Product, error)
 }
 
 type product struct {
@@ -62,21 +62,21 @@ func (p *product) Get(ctx context.Context, id int) (*models.Product, error) {
 	return product, nil
 }
 
-func (p *product) GetAll(ctx context.Context) ([]models.Product, error) {
+func (p *product) GetAll(ctx context.Context) ([]*models.Product, error) {
 	products, err := p.repo.GetAll(ctx)
 
 	if err != nil {
-		return []models.Product{}, err
+		return nil, err
 	}
 
 	return products, nil
 }
 
-func (p *product) Search(ctx context.Context, name string) ([]models.Product, error) {
+func (p *product) Search(ctx context.Context, name string) ([]*models.Product, error) {
 	products, err := p.repo.Search(ctx, name)
 
 	if err != nil {
-		return []models.Product{}, err
+		return nil, err
 	}
 
 	return products, nil

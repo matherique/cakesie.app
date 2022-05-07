@@ -12,8 +12,8 @@ type ProductRepository interface {
 	Insert(ctx context.Context, product *models.Product) error
 	Update(ctx context.Context, id int, product *models.Product) error
 	GetById(ctx context.Context, id int) (*models.Product, error)
-	GetAll(ctx context.Context) ([]models.Product, error)
-	Search(ctx context.Context, name string) ([]models.Product, error)
+	GetAll(ctx context.Context) ([]*models.Product, error)
+	Search(ctx context.Context, name string) ([]*models.Product, error)
 }
 
 type productRepository struct {
@@ -69,10 +69,56 @@ func (repo *productRepository) GetById(ctx context.Context, id int) (*models.Pro
 	return &product, nil
 }
 
-func (repo *productRepository) GetAll(ctx context.Context) ([]models.Product, error) {
-	return []models.Product{}, fmt.Errorf("not implemented")
+func (repo *productRepository) GetAll(ctx context.Context) ([]*models.Product, error) {
+	dml := `SELECT Id, Name, Unity FROM product`
+
+	db := repo.store.DB()
+
+	rows, err := db.QueryContext(ctx, dml)
+
+	if err != nil {
+		return nil, fmt.Errorf("could not get the products: %v", err)
+	}
+
+	defer rows.Close()
+
+	var products []*models.Product
+
+	for rows.Next() {
+		var product models.Product
+		if err := rows.Scan(&product.Id, &product.Name, &product.Unity); err != nil {
+			return nil, fmt.Errorf("could not get the products: %v", err)
+		}
+
+		products = append(products, &product)
+	}
+
+	return products, nil
 }
 
-func (repo *productRepository) Search(ctx context.Context, name string) ([]models.Product, error) {
-	return []models.Product{}, fmt.Errorf("not implemented")
+func (repo *productRepository) Search(ctx context.Context, name string) ([]*models.Product, error) {
+	dml := `SELECT Id, Name, Unity FROM product WHERE Name LIKE $1`
+
+	db := repo.store.DB()
+
+	rows, err := db.QueryContext(ctx, dml, "%"+name+"%")
+
+	if err != nil {
+		return nil, fmt.Errorf("could not get the products: %v", err)
+	}
+
+	defer rows.Close()
+
+	var products []*models.Product
+
+	for rows.Next() {
+		var product models.Product
+		if err := rows.Scan(&product.Id, &product.Name, &product.Unity); err != nil {
+			return nil, fmt.Errorf("could not get the products: %v", err)
+		}
+
+		products = append(products, &product)
+	}
+
+	return products, nil
 }
