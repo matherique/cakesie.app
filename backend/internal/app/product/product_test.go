@@ -41,6 +41,10 @@ func (s *spyRepo) GetAll(ctx context.Context) ([]models.Product, error) {
 	return s.products, s.resp
 }
 
+func (s *spyRepo) Search(ctx context.Context, name string) ([]models.Product, error) {
+	return s.products, s.resp
+}
+
 func TestProduct_Create(t *testing.T) {
 	tt := []struct {
 		name    string
@@ -244,6 +248,60 @@ func TestProduct_GetAll(t *testing.T) {
 			test.prepare(repo)
 
 			p, err := app.GetAll(context.Background())
+
+			if diff := cmp.Diff(test.err, err); diff != "" {
+				t.Errorf("expected error to be %v, got: %v \n %v", test.err, err, diff)
+			}
+
+			if diff := cmp.Diff(test.expect, p); diff != "" {
+				t.Errorf("expect product %v, got: %v \n %v", test.expect, p, diff)
+			}
+		})
+	}
+}
+
+func TestProduct_Search(t *testing.T) {
+	tt := []struct {
+		name    string
+		data    string
+		expect  []models.Product
+		err     error
+		prepare func(repo *spyRepo)
+	}{
+		{
+			name:   "should return an error if repository returns an error",
+			data:   "any",
+			expect: []models.Product{},
+			err:    errors.NewInternalServerError("custom error"),
+			prepare: func(repo *spyRepo) {
+				repo.resp = errors.NewInternalServerError("custom error")
+			},
+		},
+		{
+			name: "should return all products",
+			data: "product",
+			expect: []models.Product{
+				{Id: 1, Name: "product_1", Quantity: 2},
+				{Id: 2, Name: "product_2", Quantity: 2},
+			},
+			err: nil,
+			prepare: func(repo *spyRepo) {
+				repo.products = []models.Product{
+					{Id: 1, Name: "product_1", Quantity: 2},
+					{Id: 2, Name: "product_2", Quantity: 2},
+				}
+			},
+		},
+	}
+
+	for _, test := range tt {
+		t.Run(test.name, func(t *testing.T) {
+			repo := &spyRepo{}
+			app := NewProductApp(repo)
+
+			test.prepare(repo)
+
+			p, err := app.Search(context.Background(), test.data)
 
 			if diff := cmp.Diff(test.err, err); diff != "" {
 				t.Errorf("expected error to be %v, got: %v \n %v", test.err, err, diff)
