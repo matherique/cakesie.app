@@ -11,6 +11,7 @@ type Product interface {
 	Create(ctx context.Context, data *models.Product) (*models.Product, error)
 	Update(ctx context.Context, data *models.Product) (*models.Product, error)
 	Get(ctx context.Context, id int) (*models.Product, error)
+	GetAll(ctx context.Context) ([]models.Product, error)
 }
 
 type product struct {
@@ -53,4 +54,14 @@ func (p *product) Get(ctx context.Context, id int) (*models.Product, error) {
 	}
 
 	return p.repo.GetById(ctx, id)
+}
+
+func (p *product) GetAll(ctx context.Context) ([]models.Product, error) {
+	products, err := p.repo.GetAll(ctx)
+
+	if err != nil {
+		return []models.Product{}, err
+	}
+
+	return products, nil
 }

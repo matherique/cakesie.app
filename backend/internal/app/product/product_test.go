@@ -12,8 +12,9 @@ import (
 )
 
 type spyRepo struct {
-	resp    error
-	product *models.Product
+	resp     error
+	product  *models.Product
+	products []models.Product
 }
 
 func (s *spyRepo) Insert(_ context.Context, data *models.Product) error {
@@ -34,6 +35,10 @@ func (s *spyRepo) Update(ctx context.Context, id int, data *models.Product) erro
 
 func (s *spyRepo) GetById(ctx context.Context, id int) (*models.Product, error) {
 	return s.product, s.resp
+}
+
+func (s *spyRepo) GetAll(ctx context.Context) ([]models.Product, error) {
+	return s.products, s.resp
 }
 
 func TestProduct_Create(t *testing.T) {
@@ -196,7 +201,57 @@ func TestProduct_Get(t *testing.T) {
 			if diff := cmp.Diff(test.expect, p); diff != "" {
 				t.Errorf("expect product %v, got: %v \n %v", test.expect, p, diff)
 			}
+		})
+	}
+}
 
+func TestProduct_GetAll(t *testing.T) {
+	tt := []struct {
+		name    string
+		expect  []models.Product
+		err     error
+		prepare func(repo *spyRepo)
+	}{
+		{
+			name:   "should return an error if repository returns an error",
+			expect: []models.Product{},
+			err:    errors.NewInternalServerError("custom error"),
+			prepare: func(repo *spyRepo) {
+				repo.resp = errors.NewInternalServerError("custom error")
+			},
+		},
+		{
+			name: "should return all products",
+			expect: []models.Product{
+				{Id: 1, Name: "product_1", Quantity: 2},
+				{Id: 2, Name: "product_2", Quantity: 2},
+			},
+			err: errors.NewInternalServerError("custom error"),
+			prepare: func(repo *spyRepo) {
+				repo.products = []models.Product{
+					{Id: 1, Name: "product_1", Quantity: 2},
+					{Id: 2, Name: "product_2", Quantity: 2},
+				}
+			},
+		},
+	}
+
+	for _, test := range tt {
+		t.Run(test.name, func(t *testing.T) {
+			repo := &spyRepo{}
+			app := NewProductApp(repo)
+
+			test.prepare(repo)
+
+			p, err := app.GetAll(context.Background())
+
+			if diff := cmp.Diff(test.err, err); diff != "" {
+				t.Errorf("expected error to be %v, got: %v \n %v", test.err, err, diff)
+			}
+
+			if diff := cmp.Diff(test.expect, p); diff != "" {
+				t.Errorf("expect product %v, got: %v \n %v", test.expect, p, diff)
+			}
 		})
 	}
 }

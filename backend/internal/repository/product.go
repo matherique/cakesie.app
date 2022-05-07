@@ -12,6 +12,7 @@ type ProductRepository interface {
 	Insert(ctx context.Context, product *models.Product) error
 	Update(ctx context.Context, id int, product *models.Product) error
 	GetById(ctx context.Context, id int) (*models.Product, error)
+	GetAll(ctx context.Context) ([]models.Product, error)
 }
 
 type productRepository struct {
@@ -46,4 +47,8 @@ func (repo *productRepository) Update(ctx context.Context, id int, product *mode
 
 func (repo *productRepository) GetById(ctx context.Context, id int) (*models.Product, error) {
 	return nil, fmt.Errorf("not implemented")
+}
+
+func (repo *productRepository) GetAll(ctx context.Context) ([]models.Product, error) {
+	return []models.Product{}, fmt.Errorf("not implemented")
 }
