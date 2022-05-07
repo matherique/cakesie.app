@@ -5,8 +5,6 @@ import (
 
 	"testing"
 
-	"github.com/matherique/cakesie.app-backend/pkg/errors"
-
 	"github.com/google/go-cmp/cmp"
 	"github.com/matherique/cakesie.app-backend/internal/models"
 )
@@ -71,9 +69,9 @@ func TestProduct_Create(t *testing.T) {
 			name:   "should return an error if repository returns an error",
 			data:   &models.Product{Name: "any_name", Quantity: 1},
 			expect: nil,
-			err:    errors.NewInternalServerError("custom error"),
+			err:    DefaultRepositoryError,
 			prepare: func(repo *spyRepo) {
-				repo.resp = errors.NewInternalServerError("custom error")
+				repo.resp = DefaultRepositoryError
 			},
 		},
 		{
@@ -126,9 +124,9 @@ func TestProduct_Update(t *testing.T) {
 			name:   "should return an error if repository returns an error",
 			data:   &models.Product{Id: 2, Name: "any_name", Quantity: 1},
 			expect: nil,
-			err:    errors.NewInternalServerError("custom error"),
+			err:    DefaultRepositoryError,
 			prepare: func(repo *spyRepo) {
-				repo.resp = errors.NewInternalServerError("custom error")
+				repo.resp = DefaultRepositoryError
 			},
 		},
 		{
@@ -182,9 +180,9 @@ func TestProduct_Get(t *testing.T) {
 			name:   "should return an error if repository returns an error",
 			id:     1,
 			expect: nil,
-			err:    errors.NewInternalServerError("custom error"),
+			err:    DefaultRepositoryError,
 			prepare: func(repo *spyRepo) {
-				repo.resp = errors.NewInternalServerError("custom error")
+				repo.resp = DefaultRepositoryError
 			},
 		},
 	}
@@ -219,9 +217,9 @@ func TestProduct_GetAll(t *testing.T) {
 		{
 			name:   "should return an error if repository returns an error",
 			expect: []models.Product{},
-			err:    errors.NewInternalServerError("custom error"),
+			err:    DefaultRepositoryError,
 			prepare: func(repo *spyRepo) {
-				repo.resp = errors.NewInternalServerError("custom error")
+				repo.resp = DefaultRepositoryError
 			},
 		},
 		{
@@ -230,7 +228,7 @@ func TestProduct_GetAll(t *testing.T) {
 				{Id: 1, Name: "product_1", Quantity: 2},
 				{Id: 2, Name: "product_2", Quantity: 2},
 			},
-			err: errors.NewInternalServerError("custom error"),
+			err: nil,
 			prepare: func(repo *spyRepo) {
 				repo.products = []models.Product{
 					{Id: 1, Name: "product_1", Quantity: 2},
@@ -272,9 +270,9 @@ func TestProduct_Search(t *testing.T) {
 			name:   "should return an error if repository returns an error",
 			data:   "any",
 			expect: []models.Product{},
-			err:    errors.NewInternalServerError("custom error"),
+			err:    DefaultRepositoryError,
 			prepare: func(repo *spyRepo) {
-				repo.resp = errors.NewInternalServerError("custom error")
+				repo.resp = DefaultRepositoryError
 			},
 		},
 		{

@@ -31,7 +31,7 @@ func (p *product) Create(ctx context.Context, data *models.Product) (*models.Pro
 	}
 
 	if err := p.repo.Insert(ctx, data); err != nil {
-		return nil, err
+		return nil, DefaultRepositoryError
 	}
 
 	return data, nil
@@ -43,7 +43,7 @@ func (p *product) Update(ctx context.Context, data *models.Product) (*models.Pro
 	}
 
 	if err := p.repo.Update(ctx, data.Id, data); err != nil {
-		return nil, err
+		return nil, DefaultRepositoryError
 	}
 
 	return data, nil
@@ -54,7 +54,12 @@ func (p *product) Get(ctx context.Context, id int) (*models.Product, error) {
 		return nil, IdRequiredError
 	}
 
-	return p.repo.GetById(ctx, id)
+	product, err := p.repo.GetById(ctx, id)
+	if err != nil {
+		return nil, DefaultRepositoryError
+	}
+
+	return product, nil
 }
 
 func (p *product) GetAll(ctx context.Context) ([]models.Product, error) {
