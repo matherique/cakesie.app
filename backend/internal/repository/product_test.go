@@ -37,12 +37,26 @@ func TestProductRepository_Insert(t *testing.T) {
 
 	product := &models.Product{Name: "any_name", Unity: constants.Unidade}
 	if err := repo.Insert(context.Background(), product); err != nil {
-		t.Errorf("expected nil, got %v", err)
+		t.Fatalf("expected nil, got %v", err)
 	}
 
 	if product.Id == 0 {
-		t.Errorf("expected id to be greater than 0, got %d", product.Id)
+		t.Fatalf("expected id to be greater than 0, got %d", product.Id)
 	}
+}
+
+func insertProduct(t *testing.T, repo ProductRepository) *models.Product {
+	product := &models.Product{Name: "any_name", Unity: constants.Unidade}
+
+	if err := repo.Insert(context.Background(), product); err != nil {
+		t.Fatalf("expected nil, got %v", err)
+	}
+
+	if product.Id == 0 {
+		t.Fatalf("expected id to be greater than 0, got %d", product.Id)
+	}
+
+	return product
 }
 
 func TestProductRepository_Update(t *testing.T) {
@@ -53,21 +67,39 @@ func TestProductRepository_Update(t *testing.T) {
 		con.Close()
 	}(t)
 
-	product := &models.Product{Name: "any_name", Unity: constants.Unidade}
-	if err := repo.Insert(context.Background(), product); err != nil {
-		t.Errorf("expected nil, got %v", err)
-	}
-
-	if product.Id == 0 {
-		t.Errorf("expected id to be greater than 0, got %d", product.Id)
-	}
+	product := insertProduct(t, repo)
 
 	newData := &models.Product{Name: "any_name_2", Unity: constants.Unidade}
 	if err := repo.Update(context.Background(), product.Id, newData); err != nil {
-		t.Errorf("expected nil, got %v", err)
+		t.Fatalf("expected nil, got %v", err)
 	}
 
 	if newData.Name == product.Name {
-		t.Errorf("expected name to be %s, got %s", newData.Name, product.Name)
+		t.Fatalf("expected name to be %s, got %s", newData.Name, product.Name)
+	}
+}
+
+func TestProductRepository_GetById(t *testing.T) {
+	repo, con := MakeProductRepository(t)
+
+	defer func(t *testing.T) {
+		clearAll(t, con)
+		con.Close()
+	}(t)
+
+	product := insertProduct(t, repo)
+
+	p, err := repo.GetById(context.Background(), product.Id)
+
+	if err != nil {
+		t.Fatalf("expected nil, got %v", err)
+	}
+
+	if p == nil {
+		t.Fatalf("expected product to be not nil, got nil")
+	}
+
+	if p.Name != product.Name || p.Id != product.Id {
+		t.Fatalf("expected name to be %v, got %v", product, p)
 	}
 }
