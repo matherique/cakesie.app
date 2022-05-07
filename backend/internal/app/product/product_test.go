@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/matherique/cakesie.app-backend/internal/constants"
 	"github.com/matherique/cakesie.app-backend/internal/models"
 )
 
@@ -53,21 +54,21 @@ func TestProduct_Create(t *testing.T) {
 	}{
 		{
 			name:    "should return an error if missing name",
-			data:    &models.Product{Quantity: 1},
+			data:    &models.Product{Unity: constants.Kilo},
 			expect:  nil,
 			err:     NameRequiredError,
 			prepare: func(repo *spyRepo) {},
 		},
 		{
-			name:    "should return an error if missing quantity",
+			name:    "should return an error if missing unity",
 			data:    &models.Product{Name: "any_name"},
 			expect:  nil,
-			err:     QuantityRequiredError,
+			err:     UnityRequiredError,
 			prepare: func(repo *spyRepo) {},
 		},
 		{
 			name:   "should return an error if repository returns an error",
-			data:   &models.Product{Name: "any_name", Quantity: 1},
+			data:   &models.Product{Name: "any_name", Unity: constants.Kilo},
 			expect: nil,
 			err:    DefaultRepositoryError,
 			prepare: func(repo *spyRepo) {
@@ -76,11 +77,11 @@ func TestProduct_Create(t *testing.T) {
 		},
 		{
 			name:   "should return nil if everything is ok",
-			data:   &models.Product{Name: "any_name", Quantity: 1},
-			expect: &models.Product{Id: 1, Name: "any_name", Quantity: 1},
+			data:   &models.Product{Name: "any_name", Unity: constants.Kilo},
+			expect: &models.Product{Id: 1, Name: "any_name", Unity: constants.Kilo},
 			err:    nil,
 			prepare: func(repo *spyRepo) {
-				repo.product = &models.Product{Id: 1, Name: "any_name", Quantity: 1}
+				repo.product = &models.Product{Id: 1, Name: "any_name", Unity: constants.Kilo}
 			},
 		},
 	}
@@ -115,14 +116,14 @@ func TestProduct_Update(t *testing.T) {
 	}{
 		{
 			name:    "should return an error if missing id",
-			data:    &models.Product{Name: "any_name", Quantity: 1},
+			data:    &models.Product{Name: "any_name", Unity: constants.Kilo},
 			expect:  nil,
 			err:     IdRequiredError,
 			prepare: func(repo *spyRepo) {},
 		},
 		{
 			name:   "should return an error if repository returns an error",
-			data:   &models.Product{Id: 2, Name: "any_name", Quantity: 1},
+			data:   &models.Product{Id: 2, Name: "any_name", Unity: constants.Kilo},
 			expect: nil,
 			err:    DefaultRepositoryError,
 			prepare: func(repo *spyRepo) {
@@ -132,10 +133,10 @@ func TestProduct_Update(t *testing.T) {
 		{
 			name:   "should return nil if everything is ok",
 			data:   &models.Product{Id: 1, Name: "any_name"},
-			expect: &models.Product{Id: 1, Name: "any_name", Quantity: 1},
+			expect: &models.Product{Id: 1, Name: "any_name", Unity: constants.Kilo},
 			err:    nil,
 			prepare: func(repo *spyRepo) {
-				repo.product = &models.Product{Id: 1, Name: "any_name", Quantity: 1}
+				repo.product = &models.Product{Id: 1, Name: "any_name", Unity: constants.Kilo}
 			},
 		},
 	}
@@ -225,14 +226,14 @@ func TestProduct_GetAll(t *testing.T) {
 		{
 			name: "should return all products",
 			expect: []models.Product{
-				{Id: 1, Name: "product_1", Quantity: 2},
-				{Id: 2, Name: "product_2", Quantity: 2},
+				{Id: 1, Name: "product_1", Unity: constants.Kilo},
+				{Id: 2, Name: "product_2", Unity: constants.Kilo},
 			},
 			err: nil,
 			prepare: func(repo *spyRepo) {
 				repo.products = []models.Product{
-					{Id: 1, Name: "product_1", Quantity: 2},
-					{Id: 2, Name: "product_2", Quantity: 2},
+					{Id: 1, Name: "product_1", Unity: constants.Kilo},
+					{Id: 2, Name: "product_2", Unity: constants.Kilo},
 				}
 			},
 		},
@@ -279,14 +280,14 @@ func TestProduct_Search(t *testing.T) {
 			name: "should return all products",
 			data: "product",
 			expect: []models.Product{
-				{Id: 1, Name: "product_1", Quantity: 2},
-				{Id: 2, Name: "product_2", Quantity: 2},
+				{Id: 1, Name: "product_1", Unity: constants.Kilo},
+				{Id: 2, Name: "product_2", Unity: constants.Kilo},
 			},
 			err: nil,
 			prepare: func(repo *spyRepo) {
 				repo.products = []models.Product{
-					{Id: 1, Name: "product_1", Quantity: 2},
-					{Id: 2, Name: "product_2", Quantity: 2},
+					{Id: 1, Name: "product_1", Unity: constants.Kilo},
+					{Id: 2, Name: "product_2", Unity: constants.Kilo},
 				}
 			},
 		},

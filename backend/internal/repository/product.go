@@ -29,13 +29,13 @@ func NewProductRepository(store store.Store) ProductRepository {
 
 func (repo *productRepository) Insert(ctx context.Context, product *models.Product) error {
 	dml := `INSERT INTO product
-	(Name, Quantity) 
+	(Name, Unity) 
 	VALUES ($1, $2) RETURNING *`
 
 	db := repo.store.DB()
-	query := db.QueryRowContext(ctx, dml, product.Name, product.Quantity)
+	query := db.QueryRowContext(ctx, dml, product.Name, product.Unity)
 
-	if err := query.Scan(&product.Id, &product.Name, &product.Quantity); err != nil {
+	if err := query.Scan(&product.Id, &product.Name, &product.Unity); err != nil {
 		return fmt.Errorf("could not create new book: %v", err)
 	}
 

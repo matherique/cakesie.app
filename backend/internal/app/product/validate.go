@@ -6,8 +6,8 @@ func validateToInsert(data *models.Product) error {
 	switch 0 {
 	case len(data.Name):
 		return NameRequiredError
-	case data.Quantity:
-		return QuantityRequiredError
+	case len(data.Unity):
+		return UnityRequiredError
 	}
 
 	return nil

@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/matherique/cakesie.app-backend/internal/constants"
 	"github.com/matherique/cakesie.app-backend/internal/models"
 	"github.com/matherique/cakesie.app-backend/pkg/store"
 )
@@ -20,7 +21,7 @@ func TestProductRepository_Insert(t *testing.T) {
 
 	repo := NewProductRepository(store)
 
-	product := &models.Product{Name: "any_name", Quantity: 1}
+	product := &models.Product{Name: "any_name", Unity: constants.Unidade}
 	if err := repo.Insert(context.Background(), product); err != nil {
 		t.Errorf("expected nil, got %v", err)
 	}
