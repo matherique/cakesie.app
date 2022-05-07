@@ -186,6 +186,15 @@ func TestProduct_Get(t *testing.T) {
 				repo.resp = DefaultRepositoryError
 			},
 		},
+		{
+			name:   "should return a product if everything is ok",
+			id:     1,
+			expect: &models.Product{Id: 1, Name: "any_name", Unity: constants.Kilo},
+			err:    nil,
+			prepare: func(repo *spyRepo) {
+				repo.product = &models.Product{Id: 1, Name: "any_name", Unity: constants.Kilo}
+			},
+		},
 	}
 
 	for _, test := range tt {
