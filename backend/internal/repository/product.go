@@ -28,9 +28,7 @@ func NewProductRepository(store store.Store) ProductRepository {
 }
 
 func (repo *productRepository) Insert(ctx context.Context, product *models.Product) error {
-	dml := `INSERT INTO product
-	(Name, Unity) 
-	VALUES ($1, $2) RETURNING *`
+	dml := `INSERT INTO product (Name, Unity) VALUES ($1, $2) RETURNING *`
 
 	db := repo.store.DB()
 	query := db.QueryRowContext(ctx, dml, product.Name, product.Unity)
@@ -43,7 +41,17 @@ func (repo *productRepository) Insert(ctx context.Context, product *models.Produ
 }
 
 func (repo *productRepository) Update(ctx context.Context, id int, product *models.Product) error {
-	return fmt.Errorf("not implemented")
+	dml := `UPDATE product SET Name = $1, Unity = $2 WHERE Id = $3 RETURNING *`
+
+	db := repo.store.DB()
+
+	query := db.QueryRowContext(ctx, dml, product.Name, product.Unity, id)
+
+	if err := query.Scan(&product.Id, &product.Name, &product.Unity); err != nil {
+		return fmt.Errorf("could not create new book: %v", err)
+	}
+
+	return nil
 }
 
 func (repo *productRepository) GetById(ctx context.Context, id int) (*models.Product, error) {
