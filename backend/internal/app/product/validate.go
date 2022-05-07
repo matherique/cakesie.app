@@ -5,9 +5,9 @@ import "github.com/matherique/cakesie.app-backend/internal/models"
 func validateToInsert(data *models.Product) error {
 	switch 0 {
 	case len(data.Name):
-		return ErrNameRequired
+		return NameRequiredError
 	case data.Quantity:
-		return ErrQuantityRequired
+		return QuantityRequiredError
 	}
 
 	return nil
@@ -16,7 +16,7 @@ func validateToInsert(data *models.Product) error {
 func validateToUpdate(data *models.Product) error {
 	switch 0 {
 	case data.Id:
-		return ErrIdRequired
+		return IdRequiredError
 	}
 
 	return nil

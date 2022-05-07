@@ -3,7 +3,9 @@ package product
 import "github.com/matherique/cakesie.app-backend/pkg/errors"
 
 var (
-	ErrQuantityRequired = errors.NewBadRequest("quantity is required")
-	ErrNameRequired     = errors.NewBadRequest("name is required")
-	ErrIdRequired       = errors.NewBadRequest("id is required")
+	QuantityRequiredError = errors.NewBadRequest("quantity is required")
+	NameRequiredError     = errors.NewBadRequest("name is required")
+	IdRequiredError       = errors.NewBadRequest("id is required")
+
+	DefaultRepositoryError = errors.NewInternalServerError("oops something went wrong")
 )

@@ -51,7 +51,7 @@ func (p *product) Update(ctx context.Context, data *models.Product) (*models.Pro
 
 func (p *product) Get(ctx context.Context, id int) (*models.Product, error) {
 	if id == 0 {
-		return nil, ErrIdRequired
+		return nil, IdRequiredError
 	}
 
 	return p.repo.GetById(ctx, id)

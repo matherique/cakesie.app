@@ -57,14 +57,14 @@ func TestProduct_Create(t *testing.T) {
 			name:    "should return an error if missing name",
 			data:    &models.Product{Quantity: 1},
 			expect:  nil,
-			err:     ErrNameRequired,
+			err:     NameRequiredError,
 			prepare: func(repo *spyRepo) {},
 		},
 		{
 			name:    "should return an error if missing quantity",
 			data:    &models.Product{Name: "any_name"},
 			expect:  nil,
-			err:     ErrQuantityRequired,
+			err:     QuantityRequiredError,
 			prepare: func(repo *spyRepo) {},
 		},
 		{
@@ -119,7 +119,7 @@ func TestProduct_Update(t *testing.T) {
 			name:    "should return an error if missing id",
 			data:    &models.Product{Name: "any_name", Quantity: 1},
 			expect:  nil,
-			err:     ErrIdRequired,
+			err:     IdRequiredError,
 			prepare: func(repo *spyRepo) {},
 		},
 		{
@@ -175,7 +175,7 @@ func TestProduct_Get(t *testing.T) {
 			name:    "should return an error if missing id",
 			id:      0,
 			expect:  nil,
-			err:     ErrIdRequired,
+			err:     IdRequiredError,
 			prepare: func(repo *spyRepo) {},
 		},
 		{
