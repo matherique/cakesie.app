@@ -1,11 +1,11 @@
 #!/bin/sh
 
-NAME=sbo_database
+NAME=cakesie
 
 docker run -d -p 5432:5432 \
   --name $NAME \
   -v "$(pwd)/sql/:/docker-entrypoint-initdb.d/" \
-  -e POSTGRES_DB=sbo\
+  -e POSTGRES_DB=cakesie\
   -e POSTGRES_PASSWORD=123 \
   postgres
 

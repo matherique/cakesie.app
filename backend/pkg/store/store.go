@@ -10,10 +10,12 @@ import (
 type Store interface {
 	Connect() error
 	Close() error
+	WithDrive(drive string) Store
 	DB() *sql.DB
 }
 
 type store struct {
+	drive     string
 	db        *sql.DB
 	conString string
 }
@@ -25,9 +27,15 @@ func NewStore(conString string) Store {
 	return s
 }
 
+func (s *store) WithDrive(drive string) Store {
+	s.drive = drive
+
+	return s
+}
+
 func (s *store) Connect() error {
 	db, err := sql.Open(
-		"postgres",
+		s.drive,
 		s.conString,
 	)
 
