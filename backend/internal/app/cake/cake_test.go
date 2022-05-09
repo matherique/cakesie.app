@@ -24,6 +24,14 @@ func (s *spyRepo) Insert(ctx context.Context, cake *models.Cake) error {
 	return s.resp
 }
 
+func (s *spyRepo) GetAllByStatus(ctx context.Context, status bool) ([]*models.Cake, error) {
+	if s.resp != nil {
+		return nil, s.resp
+	}
+
+	return []*models.Cake{s.cake}, s.resp
+}
+
 func TestCake_Create(t *testing.T) {
 	tt := []struct {
 		name    string
@@ -94,6 +102,68 @@ func TestCake_Create(t *testing.T) {
 			test.prepare(repo)
 
 			p, err := app.Create(context.Background(), test.data)
+
+			if diff := cmp.Diff(test.err, err); diff != "" {
+				t.Errorf("expected error to be %v, got: %v - %v", test.err, err, diff)
+			}
+
+			if diff := cmp.Diff(test.expect, p); diff != "" {
+				t.Error(diff)
+			}
+		})
+	}
+}
+
+func TestCake_GetAllByStatus(t *testing.T) {
+	tt := []struct {
+		name    string
+		status  bool
+		expect  []*models.Cake
+		err     error
+		prepare func(repo *spyRepo)
+	}{
+		{
+			name:   "should return an error if repository returns an error",
+			status: false,
+			expect: nil,
+			err:    DefaultRepositoryError,
+			prepare: func(repo *spyRepo) {
+				repo.resp = fmt.Errorf("any error")
+			},
+		},
+		{
+			name:   "should return nil if everything is ok",
+			status: true,
+			expect: []*models.Cake{
+				{
+					Id:           1,
+					Name:         "any_cake",
+					Price:        10.0,
+					Description:  "desc",
+					Ingredientes: []string{"ingrediente"},
+				},
+			},
+			err: nil,
+			prepare: func(repo *spyRepo) {
+				repo.cake = &models.Cake{
+					Id:           1,
+					Name:         "any_cake",
+					Price:        10.0,
+					Description:  "desc",
+					Ingredientes: []string{"ingrediente"},
+				}
+			},
+		},
+	}
+
+	for _, test := range tt {
+		t.Run(test.name, func(t *testing.T) {
+			repo := &spyRepo{}
+			app := NewCakeApp(repo)
+
+			test.prepare(repo)
+
+			p, err := app.GetAllByStatus(context.Background(), test.status)
 
 			if diff := cmp.Diff(test.err, err); diff != "" {
 				t.Errorf("expected error to be %v, got: %v - %v", test.err, err, diff)

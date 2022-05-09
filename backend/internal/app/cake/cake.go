@@ -17,6 +17,7 @@ type Getter interface {
 
 type Cake interface {
 	Creater
+	Getter
 }
 
 type cake struct {
@@ -39,4 +40,13 @@ func (c *cake) Create(ctx context.Context, date *models.Cake) (*models.Cake, err
 	}
 
 	return date, nil
+}
+
+func (c *cake) GetAllByStatus(ctx context.Context, status bool) ([]*models.Cake, error) {
+	cakes, err := c.repo.GetAllByStatus(ctx, status)
+	if err != nil {
+		return nil, DefaultRepositoryError
+	}
+
+	return cakes, nil
 }
