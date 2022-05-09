@@ -1,56 +1,106 @@
-package cake_test
+package cake
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"testing"
 
-	"github.com/matherique/cakesie.app-backend/internal/app/cake"
+	"github.com/google/go-cmp/cmp"
 	"github.com/matherique/cakesie.app-backend/internal/models"
 )
 
 type spyRepo struct {
 	called int
 	resp   error
+	cake   *models.Cake
 }
 
 func (s *spyRepo) Insert(ctx context.Context, cake *models.Cake) error {
-	s.called++
+	if s.resp != nil {
+		return s.resp
+	}
+
+	*cake = *s.cake
 	return s.resp
 }
 
-func TestCake_New(t *testing.T) {
-	repo := &spyRepo{}
-
+func TestCake_Create(t *testing.T) {
 	tt := []struct {
-		desc  string
-		name  string
-		price float64
-		cake  *models.Cake
-		err   error
+		name    string
+		data    *models.Cake
+		expect  *models.Cake
+		err     error
+		prepare func(repo *spyRepo)
 	}{
 		{
-			desc:  "should return an error if the repository returns an error",
-			name:  "",
-			price: 0,
-			cake:  nil,
-			err:   errors.New("custom error"),
+			name:    "should return an error if missing name",
+			data:    &models.Cake{Price: 1, Description: "desc", Ingredientes: []string{"ingrediente"}},
+			expect:  nil,
+			err:     NameRequiredError,
+			prepare: func(repo *spyRepo) {},
+		},
+		{
+			name:    "should return an error if missing price",
+			data:    &models.Cake{Name: "any_cake", Description: "desc", Ingredientes: []string{"ingrediente"}},
+			expect:  nil,
+			err:     PriceRequiredError,
+			prepare: func(repo *spyRepo) {},
+		},
+		{
+			name:    "should return an error if missing description",
+			data:    &models.Cake{Name: "any_cake", Price: 10.0, Ingredientes: []string{"ingrediente"}},
+			expect:  nil,
+			err:     DescriptionRequiredError,
+			prepare: func(repo *spyRepo) {},
+		},
+		{
+			name:    "should return an error if missing ingredients",
+			data:    &models.Cake{Name: "any_cake", Price: 10.0, Description: "desc"},
+			expect:  nil,
+			err:     IngredientesRequiredError,
+			prepare: func(repo *spyRepo) {},
+		},
+		{
+			name:   "should return an error if repository returns an error",
+			data:   &models.Cake{Name: "any_cake", Price: 10.0, Description: "desc", Ingredientes: []string{"ingrediente"}},
+			expect: nil,
+			err:    DefaultRepositoryError,
+			prepare: func(repo *spyRepo) {
+				repo.resp = fmt.Errorf("any error")
+			},
+		},
+		{
+			name:   "should return nil if everything is ok",
+			data:   &models.Cake{Name: "any_cake", Price: 10.0, Description: "desc", Ingredientes: []string{"ingrediente"}},
+			expect: &models.Cake{Id: 1, Name: "any_cake", Price: 10.0, Description: "desc", Ingredientes: []string{"ingrediente"}},
+			err:    nil,
+			prepare: func(repo *spyRepo) {
+				repo.cake = &models.Cake{
+					Id:           1,
+					Name:         "any_cake",
+					Price:        10.0,
+					Description:  "desc",
+					Ingredientes: []string{"ingrediente"},
+				}
+			},
 		},
 	}
 
-	ctx := context.Background()
 	for _, test := range tt {
-		t.Run(test.desc, func(t *testing.T) {
-			repo.resp = test.err
-			app := cake.NewCakeApp(repo)
-			c, err := app.New(ctx, test.name, test.price)
+		t.Run(test.name, func(t *testing.T) {
+			repo := &spyRepo{}
+			app := NewCakeApp(repo)
 
-			if err != test.err {
-				t.Errorf("expected error %s, got %s", test.err, err)
+			test.prepare(repo)
+
+			p, err := app.Create(context.Background(), test.data)
+
+			if diff := cmp.Diff(test.err, err); diff != "" {
+				t.Errorf("expected error to be %v, got: %v - %v", test.err, err, diff)
 			}
 
-			if c != test.cake {
-				t.Errorf("expected cake %v, got %v", test.cake, c)
+			if diff := cmp.Diff(test.expect, p); diff != "" {
+				t.Error(diff)
 			}
 		})
 	}

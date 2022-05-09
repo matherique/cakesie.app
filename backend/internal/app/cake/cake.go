@@ -7,8 +7,16 @@ import (
 	"github.com/matherique/cakesie.app-backend/internal/repository"
 )
 
+type Creater interface {
+	Create(ctx context.Context, data *models.Cake) (*models.Cake, error)
+}
+
+type Getter interface {
+	GetAllByStatus(ctx context.Context, status bool) ([]*models.Cake, error)
+}
+
 type Cake interface {
-	New(ctx context.Context, name string, price float64) (*models.Cake, error)
+	Creater
 }
 
 type cake struct {
@@ -21,17 +29,14 @@ func NewCakeApp(repo repository.CakeRepository) Cake {
 	}
 }
 
-func (c *cake) New(ctx context.Context, name string, price float64) (*models.Cake, error) {
-	cake := &models.Cake{
-		Name:  name,
-		Price: price,
-	}
-
-	err := c.repo.Insert(ctx, cake)
-
-	if err != nil {
+func (c *cake) Create(ctx context.Context, date *models.Cake) (*models.Cake, error) {
+	if err := validateToInsert(date); err != nil {
 		return nil, err
 	}
 
-	return cake, nil
+	if err := c.repo.Insert(ctx, date); err != nil {
+		return nil, DefaultRepositoryError
+	}
+
+	return date, nil
 }
