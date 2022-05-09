@@ -15,9 +15,14 @@ type Getter interface {
 	GetAllByStatus(ctx context.Context, status bool) ([]*models.Cake, error)
 }
 
+type Updater interface {
+	ChangeStatus(ctx context.Context, id int, status bool) error
+}
+
 type Cake interface {
 	Creater
 	Getter
+	Updater
 }
 
 type cake struct {
@@ -49,4 +54,16 @@ func (c *cake) GetAllByStatus(ctx context.Context, status bool) ([]*models.Cake,
 	}
 
 	return cakes, nil
+}
+
+func (c *cake) ChangeStatus(ctx context.Context, id int, status bool) error {
+	if id == 0 {
+		return IdRequiredError
+	}
+
+	if err := c.repo.UpdateStatus(ctx, id, status); err != nil {
+		return DefaultRepositoryError
+	}
+
+	return nil
 }
