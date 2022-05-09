@@ -10,7 +10,7 @@ func validateToInsert(data *models.Cake) error {
 		return DescriptionRequiredError
 	case data.Price <= 0:
 		return PriceRequiredError
-	case len(data.Ingredientes) == 0:
+	case len(data.CakeIngredients) == 0:
 		return IngredientesRequiredError
 	}
 

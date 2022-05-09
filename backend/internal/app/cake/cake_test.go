@@ -66,36 +66,65 @@ func TestCake_Create(t *testing.T) {
 		prepare func(repo *spyRepo)
 	}{
 		{
-			name:    "should return an error if missing name",
-			data:    &models.Cake{Price: 1, Description: "desc", Ingredientes: []string{"ingrediente"}},
+			name: "should return an error if missing name",
+			data: &models.Cake{
+				Price:       1,
+				Description: "desc",
+				CakeIngredients: []models.CakeIngredients{
+					{ProductId: 1, Quantity: 1},
+				},
+			},
 			expect:  nil,
 			err:     NameRequiredError,
 			prepare: func(repo *spyRepo) {},
 		},
 		{
-			name:    "should return an error if missing price",
-			data:    &models.Cake{Name: "any_cake", Description: "desc", Ingredientes: []string{"ingrediente"}},
+			name: "should return an error if missing price",
+			data: &models.Cake{
+				Name:        "any_cake",
+				Description: "desc",
+				CakeIngredients: []models.CakeIngredients{
+					{ProductId: 1, Quantity: 1},
+				},
+			},
 			expect:  nil,
 			err:     PriceRequiredError,
 			prepare: func(repo *spyRepo) {},
 		},
 		{
-			name:    "should return an error if missing description",
-			data:    &models.Cake{Name: "any_cake", Price: 10.0, Ingredientes: []string{"ingrediente"}},
+			name: "should return an error if missing description",
+			data: &models.Cake{
+				Name:  "any_cake",
+				Price: 10.0,
+				CakeIngredients: []models.CakeIngredients{
+					{ProductId: 1, Quantity: 1},
+				},
+			},
 			expect:  nil,
 			err:     DescriptionRequiredError,
 			prepare: func(repo *spyRepo) {},
 		},
 		{
-			name:    "should return an error if missing ingredients",
-			data:    &models.Cake{Name: "any_cake", Price: 10.0, Description: "desc"},
+			name: "should return an error if missing ingredients",
+			data: &models.Cake{
+				Name:        "any_cake",
+				Price:       10.0,
+				Description: "desc",
+			},
 			expect:  nil,
 			err:     IngredientesRequiredError,
 			prepare: func(repo *spyRepo) {},
 		},
 		{
-			name:   "should return an error if repository returns an error",
-			data:   &models.Cake{Name: "any_cake", Price: 10.0, Description: "desc", Ingredientes: []string{"ingrediente"}},
+			name: "should return an error if repository returns an error",
+			data: &models.Cake{
+				Name:        "any_cake",
+				Price:       10.0,
+				Description: "desc",
+				CakeIngredients: []models.CakeIngredients{
+					{ProductId: 1, Quantity: 1},
+				},
+			},
 			expect: nil,
 			err:    DefaultRepositoryError,
 			prepare: func(repo *spyRepo) {
@@ -103,17 +132,34 @@ func TestCake_Create(t *testing.T) {
 			},
 		},
 		{
-			name:   "should return nil if everything is ok",
-			data:   &models.Cake{Name: "any_cake", Price: 10.0, Description: "desc", Ingredientes: []string{"ingrediente"}},
-			expect: &models.Cake{Id: 1, Name: "any_cake", Price: 10.0, Description: "desc", Ingredientes: []string{"ingrediente"}},
-			err:    nil,
+			name: "should return nil if everything is ok",
+			data: &models.Cake{
+				Name:        "any_cake",
+				Price:       10.0,
+				Description: "desc",
+				CakeIngredients: []models.CakeIngredients{
+					{ProductId: 1, Quantity: 1},
+				},
+			},
+			expect: &models.Cake{
+				Id:          1,
+				Name:        "any_cake",
+				Price:       10.0,
+				Description: "desc",
+				CakeIngredients: []models.CakeIngredients{
+					{ProductId: 1, Quantity: 1},
+				},
+			},
+			err: nil,
 			prepare: func(repo *spyRepo) {
 				repo.cake = &models.Cake{
-					Id:           1,
-					Name:         "any_cake",
-					Price:        10.0,
-					Description:  "desc",
-					Ingredientes: []string{"ingrediente"},
+					Id:          1,
+					Name:        "any_cake",
+					Price:       10.0,
+					Description: "desc",
+					CakeIngredients: []models.CakeIngredients{
+						{ProductId: 1, Quantity: 1},
+					},
 				}
 			},
 		},
@@ -161,21 +207,25 @@ func TestCake_GetAllByStatus(t *testing.T) {
 			status: true,
 			expect: []*models.Cake{
 				{
-					Id:           1,
-					Name:         "any_cake",
-					Price:        10.0,
-					Description:  "desc",
-					Ingredientes: []string{"ingrediente"},
+					Id:          1,
+					Name:        "any_cake",
+					Price:       10.0,
+					Description: "desc",
+					CakeIngredients: []models.CakeIngredients{
+						{ProductId: 1, Quantity: 1},
+					},
 				},
 			},
 			err: nil,
 			prepare: func(repo *spyRepo) {
 				repo.cake = &models.Cake{
-					Id:           1,
-					Name:         "any_cake",
-					Price:        10.0,
-					Description:  "desc",
-					Ingredientes: []string{"ingrediente"},
+					Id:          1,
+					Name:        "any_cake",
+					Price:       10.0,
+					Description: "desc",
+					CakeIngredients: []models.CakeIngredients{
+						{ProductId: 1, Quantity: 1},
+					},
 				}
 			},
 		},
@@ -283,11 +333,13 @@ func TestCake_Update(t *testing.T) {
 			err:  nil,
 			prepare: func(repo *spyRepo) {
 				repo.cake = &models.Cake{
-					Id:           2,
-					Name:         "any_cake",
-					Price:        10.0,
-					Description:  "desc",
-					Ingredientes: []string{"ingrediente"},
+					Id:          2,
+					Name:        "any_cake",
+					Price:       10.0,
+					Description: "desc",
+					CakeIngredients: []models.CakeIngredients{
+						{ProductId: 1, Quantity: 1},
+					},
 				}
 			},
 		},
@@ -341,11 +393,13 @@ func TestCake_GetById(t *testing.T) {
 			err:  nil,
 			prepare: func(repo *spyRepo) {
 				repo.cake = &models.Cake{
-					Id:           2,
-					Name:         "any_cake",
-					Price:        10.0,
-					Description:  "desc",
-					Ingredientes: []string{"ingrediente"},
+					Id:          2,
+					Name:        "any_cake",
+					Price:       10.0,
+					Description: "desc",
+					CakeIngredients: []models.CakeIngredients{
+						{ProductId: 1, Quantity: 1},
+					},
 				}
 			},
 		},
