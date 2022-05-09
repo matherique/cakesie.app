@@ -12,6 +12,7 @@ type CakeRepository interface {
 	Insert(ctx context.Context, cake *models.Cake) error
 	GetAllByStatus(ctx context.Context, status bool) ([]*models.Cake, error)
 	UpdateStatus(ctx context.Context, id int, status bool) error
+	Update(ctx context.Context, id int, cake *models.Cake) error
 }
 
 type cakeRepo struct {
@@ -43,5 +44,9 @@ func (br *cakeRepo) GetAllByStatus(ctx context.Context, status bool) ([]*models.
 }
 
 func (br *cakeRepo) UpdateStatus(ctx context.Context, id int, status bool) error {
+	return fmt.Errorf("not implemented")
+}
+
+func (br *cakeRepo) Update(ctx context.Context, id int, cake *models.Cake) error {
 	return fmt.Errorf("not implemented")
 }

@@ -17,6 +17,7 @@ type Getter interface {
 
 type Updater interface {
 	ChangeStatus(ctx context.Context, id int, status bool) error
+	Update(ctx context.Context, id int, data *models.Cake) (*models.Cake, error)
 }
 
 type Cake interface {
@@ -66,4 +67,16 @@ func (c *cake) ChangeStatus(ctx context.Context, id int, status bool) error {
 	}
 
 	return nil
+}
+
+func (c *cake) Update(ctx context.Context, id int, data *models.Cake) (*models.Cake, error) {
+	if id == 0 {
+		return nil, IdRequiredError
+	}
+
+	if err := c.repo.Update(ctx, id, data); err != nil {
+		return nil, DefaultRepositoryError
+	}
+
+	return data, nil
 }
