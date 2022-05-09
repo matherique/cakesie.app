@@ -12,6 +12,7 @@ type Creater interface {
 }
 
 type Getter interface {
+	GetById(ctx context.Context, id int) (*models.Cake, error)
 	GetAllByStatus(ctx context.Context, status bool) ([]*models.Cake, error)
 }
 
@@ -79,4 +80,18 @@ func (c *cake) Update(ctx context.Context, id int, data *models.Cake) (*models.C
 	}
 
 	return data, nil
+}
+
+func (c *cake) GetById(ctx context.Context, id int) (*models.Cake, error) {
+	if id == 0 {
+		return nil, IdRequiredError
+	}
+
+	cake, err := c.repo.GetById(ctx, id)
+
+	if err != nil {
+		return nil, DefaultRepositoryError
+	}
+
+	return cake, nil
 }

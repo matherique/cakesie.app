@@ -11,42 +11,50 @@ import (
 
 type spyRepo struct {
 	called int
-	resp   error
+	err    error
 	cake   *models.Cake
 }
 
 func (s *spyRepo) Insert(ctx context.Context, cake *models.Cake) error {
-	if s.resp != nil {
-		return s.resp
+	if s.err != nil {
+		return s.err
 	}
 
 	*cake = *s.cake
-	return s.resp
+	return s.err
 }
 
 func (s *spyRepo) GetAllByStatus(ctx context.Context, status bool) ([]*models.Cake, error) {
-	if s.resp != nil {
-		return nil, s.resp
+	if s.err != nil {
+		return nil, s.err
 	}
 
-	return []*models.Cake{s.cake}, s.resp
+	return []*models.Cake{s.cake}, s.err
 }
 
 func (s *spyRepo) UpdateStatus(ctx context.Context, id int, status bool) error {
-	if s.resp != nil {
-		return s.resp
+	if s.err != nil {
+		return s.err
 	}
 
-	return s.resp
+	return s.err
 }
 
 func (s *spyRepo) Update(ctx context.Context, id int, cake *models.Cake) error {
-	if s.resp != nil {
-		return s.resp
+	if s.err != nil {
+		return s.err
 	}
 
 	*cake = *s.cake
-	return s.resp
+	return s.err
+}
+
+func (s *spyRepo) GetById(ctx context.Context, id int) (*models.Cake, error) {
+	if s.err != nil {
+		return nil, s.err
+	}
+
+	return s.cake, nil
 }
 
 func TestCake_Create(t *testing.T) {
@@ -91,7 +99,7 @@ func TestCake_Create(t *testing.T) {
 			expect: nil,
 			err:    DefaultRepositoryError,
 			prepare: func(repo *spyRepo) {
-				repo.resp = fmt.Errorf("any error")
+				repo.err = fmt.Errorf("any error")
 			},
 		},
 		{
@@ -145,7 +153,7 @@ func TestCake_GetAllByStatus(t *testing.T) {
 			expect: nil,
 			err:    DefaultRepositoryError,
 			prepare: func(repo *spyRepo) {
-				repo.resp = fmt.Errorf("any error")
+				repo.err = fmt.Errorf("any error")
 			},
 		},
 		{
@@ -206,7 +214,7 @@ func TestCake_ChangeStatus(t *testing.T) {
 			status: false,
 			err:    IdRequiredError,
 			prepare: func(repo *spyRepo) {
-				repo.resp = fmt.Errorf("any error")
+				repo.err = fmt.Errorf("any error")
 			},
 		},
 		{
@@ -215,7 +223,7 @@ func TestCake_ChangeStatus(t *testing.T) {
 			status: false,
 			err:    DefaultRepositoryError,
 			prepare: func(repo *spyRepo) {
-				repo.resp = fmt.Errorf("any error")
+				repo.err = fmt.Errorf("any error")
 			},
 		},
 		{
@@ -256,7 +264,7 @@ func TestCake_Update(t *testing.T) {
 			data: &models.Cake{},
 			err:  IdRequiredError,
 			prepare: func(repo *spyRepo) {
-				repo.resp = fmt.Errorf("any error")
+				repo.err = fmt.Errorf("any error")
 			},
 		},
 		{
@@ -265,7 +273,7 @@ func TestCake_Update(t *testing.T) {
 			data: &models.Cake{},
 			err:  DefaultRepositoryError,
 			prepare: func(repo *spyRepo) {
-				repo.resp = fmt.Errorf("any error")
+				repo.err = fmt.Errorf("any error")
 			},
 		},
 		{
@@ -293,6 +301,64 @@ func TestCake_Update(t *testing.T) {
 			test.prepare(repo)
 
 			_, err := app.Update(context.Background(), test.id, test.data)
+
+			if diff := cmp.Diff(test.err, err); diff != "" {
+				t.Errorf("expected error to be %v, got: %v - %v", test.err, err, diff)
+			}
+		})
+	}
+}
+
+func TestCake_GetById(t *testing.T) {
+	tt := []struct {
+		name    string
+		id      int
+		data    *models.Cake
+		err     error
+		prepare func(repo *spyRepo)
+	}{
+		{
+			name: "should return an error if missing id",
+			data: &models.Cake{},
+			err:  IdRequiredError,
+			prepare: func(repo *spyRepo) {
+				repo.err = fmt.Errorf("any error")
+			},
+		},
+		{
+			name: "should return an error if repository returns an error",
+			id:   1,
+			data: &models.Cake{},
+			err:  DefaultRepositoryError,
+			prepare: func(repo *spyRepo) {
+				repo.err = fmt.Errorf("any error")
+			},
+		},
+		{
+			name: "should return nil if everything is ok",
+			data: &models.Cake{},
+			id:   2,
+			err:  nil,
+			prepare: func(repo *spyRepo) {
+				repo.cake = &models.Cake{
+					Id:           2,
+					Name:         "any_cake",
+					Price:        10.0,
+					Description:  "desc",
+					Ingredientes: []string{"ingrediente"},
+				}
+			},
+		},
+	}
+
+	for _, test := range tt {
+		t.Run(test.name, func(t *testing.T) {
+			repo := &spyRepo{}
+			app := NewCakeApp(repo)
+
+			test.prepare(repo)
+
+			_, err := app.GetById(context.Background(), test.id)
 
 			if diff := cmp.Diff(test.err, err); diff != "" {
 				t.Errorf("expected error to be %v, got: %v - %v", test.err, err, diff)
