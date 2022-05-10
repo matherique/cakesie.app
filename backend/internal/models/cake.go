@@ -11,6 +11,6 @@ type Cake struct {
 	Price           float64           `json:"Photo,omitempty"`
 	Description     string            `json:"Description,omitempty"`
 	Status          bool              `json:"Status,omitempty"`
-	Ingredientes    []Ingredients     `json:"Ingredientes,omitempty"`
+	Ingredients     []*Ingredient     `json:"Ingredientes,omitempty"`
 	CakeIngredients []CakeIngredients `json:"CakeIngredients,omitempty"`
 }

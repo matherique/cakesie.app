@@ -9,7 +9,8 @@ import (
 )
 
 type cakeRepoInMemory struct {
-	cake []*models.Cake
+	cake        []*models.Cake
+	ingredients []*models.Ingredient
 }
 
 func NewCakeRepositoryInMemory() *cakeRepoInMemory {
@@ -21,14 +22,6 @@ func NewCakeRepositoryInMemory() *cakeRepoInMemory {
 func (s *cakeRepoInMemory) Insert(ctx context.Context, cake *models.Cake) error {
 	cake.Id = len(s.cake) + 1
 	s.cake = append(s.cake, cake)
-
-	cake.Ingredientes = []models.Ingredients{
-		{
-			CakeId:    cake.Id,
-			ProductId: cake.CakeIngredients[0].ProductId,
-			Quantity:  cake.CakeIngredients[0].Quantity,
-		},
-	}
 
 	return nil
 }
@@ -96,6 +89,10 @@ func (s *cakeRepoInMemory) GetById(ctx context.Context, id int) (*models.Cake, e
 	return nil, fmt.Errorf("not found")
 }
 
+func (s *cakeRepoInMemory) InsertIngredient(ctx context.Context, ingredient *models.Ingredient) error {
+	return nil
+}
+
 func TestCake_Create(t *testing.T) {
 	repo := new(cakeRepoInMemory)
 	app := NewCakeApp(repo)
@@ -127,16 +124,16 @@ func TestCake_Create(t *testing.T) {
 		t.Errorf("expected status true, got %v", p.Status)
 	}
 
-	if len(p.Ingredientes) != 1 {
-		t.Errorf("expected len(ingredientes) == 1, got %v", len(p.Ingredientes))
+	if len(p.Ingredients) != 1 {
+		t.Errorf("expected len(ingredientes) == 1, got %v", len(p.Ingredients))
 	}
 
-	if p.Ingredientes[0].ProductId != data.CakeIngredients[0].ProductId {
-		t.Errorf("expected ingrediente.ProductId == 1, got %v", p.Ingredientes[0].ProductId)
+	if p.Ingredients[0].ProductId != data.CakeIngredients[0].ProductId {
+		t.Errorf("expected ingrediente.ProductId == 1, got %v", p.Ingredients[0].ProductId)
 	}
 
-	if p.Ingredientes[0].Quantity != data.CakeIngredients[0].Quantity {
-		t.Errorf("expected ingrediente.Quantity == 1, got %v", p.Ingredientes[0].Quantity)
+	if p.Ingredients[0].Quantity != data.CakeIngredients[0].Quantity {
+		t.Errorf("expected ingrediente.Quantity == 1, got %v", p.Ingredients[0].Quantity)
 	}
 }
 

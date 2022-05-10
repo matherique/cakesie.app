@@ -48,6 +48,14 @@ func (c *cake) Create(ctx context.Context, data *models.Cake) (*models.Cake, err
 		return nil, DefaultRepositoryError
 	}
 
+	ingredients, err := c.addIngredient(ctx, data.CakeIngredients, data.Id)
+
+	if err != nil {
+		return nil, DefaultRepositoryError
+	}
+
+	data.Ingredients = ingredients
+
 	return data, nil
 }
 
@@ -96,4 +104,27 @@ func (c *cake) GetById(ctx context.Context, id int) (*models.Cake, error) {
 	}
 
 	return cake, nil
+}
+
+func (c *cake) addIngredient(ctx context.Context, ingredients []models.CakeIngredients, cakeId int) ([]*models.Ingredient, error) {
+	if len(ingredients) == 0 {
+		return nil, nil
+	}
+
+	var newIngredients []*models.Ingredient
+
+	for _, ing := range ingredients {
+		var ingredient models.Ingredient
+		ingredient.CakeId = cakeId
+		ingredient.ProductId = ing.ProductId
+		ingredient.Quantity = ing.Quantity
+
+		if err := c.repo.InsertIngredient(ctx, &ingredient); err != nil {
+			continue
+		}
+
+		newIngredients = append(newIngredients, &ingredient)
+	}
+
+	return newIngredients, nil
 }
