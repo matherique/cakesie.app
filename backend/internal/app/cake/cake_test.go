@@ -5,418 +5,272 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/google/go-cmp/cmp"
 	"github.com/matherique/cakesie.app-backend/internal/models"
 )
 
-type spyRepo struct {
-	called int
-	err    error
-	cake   *models.Cake
+type cakeRepoInMemory struct {
+	cake []*models.Cake
 }
 
-func (s *spyRepo) Insert(ctx context.Context, cake *models.Cake) error {
-	if s.err != nil {
-		return s.err
+func NewCakeRepositoryInMemory() *cakeRepoInMemory {
+	return &cakeRepoInMemory{
+		cake: []*models.Cake{},
 	}
-
-	*cake = *s.cake
-	return s.err
 }
 
-func (s *spyRepo) GetAllByStatus(ctx context.Context, status bool) ([]*models.Cake, error) {
-	if s.err != nil {
-		return nil, s.err
+func (s *cakeRepoInMemory) Insert(ctx context.Context, cake *models.Cake) error {
+	cake.Id = len(s.cake) + 1
+	s.cake = append(s.cake, cake)
+
+	cake.Ingredientes = []models.Ingredients{
+		{
+			CakeId:    cake.Id,
+			ProductId: cake.CakeIngredients[0].ProductId,
+			Quantity:  cake.CakeIngredients[0].Quantity,
+		},
 	}
 
-	return []*models.Cake{s.cake}, s.err
+	return nil
 }
 
-func (s *spyRepo) UpdateStatus(ctx context.Context, id int, status bool) error {
-	if s.err != nil {
-		return s.err
+func (s *cakeRepoInMemory) GetAllByStatus(ctx context.Context, status bool) ([]*models.Cake, error) {
+	var cakes []*models.Cake
+	for _, cake := range s.cake {
+		if cake.Status == status {
+			cakes = append(cakes, cake)
+		}
 	}
 
-	return s.err
+	if len(cakes) == 0 {
+		return nil, fmt.Errorf("not found")
+	}
+
+	return cakes, nil
 }
 
-func (s *spyRepo) Update(ctx context.Context, id int, cake *models.Cake) error {
-	if s.err != nil {
-		return s.err
+func (s *cakeRepoInMemory) UpdateStatus(ctx context.Context, id int, status bool) error {
+	var cake *models.Cake
+
+	for _, c := range s.cake {
+		if c.Id == id {
+			cake = c
+			break
+		}
 	}
 
-	*cake = *s.cake
-	return s.err
+	if cake == nil {
+		return fmt.Errorf("not found")
+	}
+
+	cake.Status = status
+
+	return nil
 }
 
-func (s *spyRepo) GetById(ctx context.Context, id int) (*models.Cake, error) {
-	if s.err != nil {
-		return nil, s.err
+func (s *cakeRepoInMemory) Update(ctx context.Context, id int, data *models.Cake) error {
+	var cake *models.Cake
+
+	for _, c := range s.cake {
+		if c.Id == id {
+			cake = c
+			break
+		}
 	}
 
-	return s.cake, nil
+	if cake == nil {
+		return fmt.Errorf("not found")
+	}
+
+	*cake = *data
+
+	return nil
+}
+
+func (s *cakeRepoInMemory) GetById(ctx context.Context, id int) (*models.Cake, error) {
+	for _, c := range s.cake {
+		if c.Id == id {
+			return c, nil
+		}
+	}
+
+	return nil, fmt.Errorf("not found")
 }
 
 func TestCake_Create(t *testing.T) {
-	tt := []struct {
-		name    string
-		data    *models.Cake
-		expect  *models.Cake
-		err     error
-		prepare func(repo *spyRepo)
-	}{
-		{
-			name: "should return an error if missing name",
-			data: &models.Cake{
-				Price:       1,
-				Description: "desc",
-				CakeIngredients: []models.CakeIngredients{
-					{ProductId: 1, Quantity: 1},
-				},
-			},
-			expect:  nil,
-			err:     NameRequiredError,
-			prepare: func(repo *spyRepo) {},
-		},
-		{
-			name: "should return an error if missing price",
-			data: &models.Cake{
-				Name:        "any_cake",
-				Description: "desc",
-				CakeIngredients: []models.CakeIngredients{
-					{ProductId: 1, Quantity: 1},
-				},
-			},
-			expect:  nil,
-			err:     PriceRequiredError,
-			prepare: func(repo *spyRepo) {},
-		},
-		{
-			name: "should return an error if missing description",
-			data: &models.Cake{
-				Name:  "any_cake",
-				Price: 10.0,
-				CakeIngredients: []models.CakeIngredients{
-					{ProductId: 1, Quantity: 1},
-				},
-			},
-			expect:  nil,
-			err:     DescriptionRequiredError,
-			prepare: func(repo *spyRepo) {},
-		},
-		{
-			name: "should return an error if missing ingredients",
-			data: &models.Cake{
-				Name:        "any_cake",
-				Price:       10.0,
-				Description: "desc",
-			},
-			expect:  nil,
-			err:     IngredientesRequiredError,
-			prepare: func(repo *spyRepo) {},
-		},
-		{
-			name: "should return an error if repository returns an error",
-			data: &models.Cake{
-				Name:        "any_cake",
-				Price:       10.0,
-				Description: "desc",
-				CakeIngredients: []models.CakeIngredients{
-					{ProductId: 1, Quantity: 1},
-				},
-			},
-			expect: nil,
-			err:    DefaultRepositoryError,
-			prepare: func(repo *spyRepo) {
-				repo.err = fmt.Errorf("any error")
-			},
-		},
-		{
-			name: "should return nil if everything is ok",
-			data: &models.Cake{
-				Name:        "any_cake",
-				Price:       10.0,
-				Description: "desc",
-				CakeIngredients: []models.CakeIngredients{
-					{ProductId: 1, Quantity: 1},
-				},
-			},
-			expect: &models.Cake{
-				Id:          1,
-				Name:        "any_cake",
-				Price:       10.0,
-				Description: "desc",
-				CakeIngredients: []models.CakeIngredients{
-					{ProductId: 1, Quantity: 1},
-				},
-			},
-			err: nil,
-			prepare: func(repo *spyRepo) {
-				repo.cake = &models.Cake{
-					Id:          1,
-					Name:        "any_cake",
-					Price:       10.0,
-					Description: "desc",
-					CakeIngredients: []models.CakeIngredients{
-						{ProductId: 1, Quantity: 1},
-					},
-				}
-			},
-		},
+	repo := new(cakeRepoInMemory)
+	app := NewCakeApp(repo)
+
+	data := new(models.Cake)
+
+	_, err := app.Create(context.Background(), data)
+
+	if err == nil {
+		t.Fatalf("expected %v, got nil", err)
 	}
 
-	for _, test := range tt {
-		t.Run(test.name, func(t *testing.T) {
-			repo := &spyRepo{}
-			app := NewCakeApp(repo)
+	data.Name = "test"
+	data.Description = "test"
+	data.Price = 1.0
+	data.CakeIngredients = []models.CakeIngredients{{ProductId: 1, Quantity: 1}}
 
-			test.prepare(repo)
+	p, err := app.Create(context.Background(), data)
 
-			p, err := app.Create(context.Background(), test.data)
+	if err != nil {
+		t.Fatalf("expected nil, got %v", err)
+	}
 
-			if diff := cmp.Diff(test.err, err); diff != "" {
-				t.Errorf("expected error to be %v, got: %v - %v", test.err, err, diff)
-			}
+	if p.Id == 0 {
+		t.Errorf("expected id > 0, got %v", p.Id)
+	}
 
-			if diff := cmp.Diff(test.expect, p); diff != "" {
-				t.Error(diff)
-			}
-		})
+	if p.Status != true {
+		t.Errorf("expected status true, got %v", p.Status)
+	}
+
+	if len(p.Ingredientes) != 1 {
+		t.Errorf("expected len(ingredientes) == 1, got %v", len(p.Ingredientes))
+	}
+
+	if p.Ingredientes[0].ProductId != data.CakeIngredients[0].ProductId {
+		t.Errorf("expected ingrediente.ProductId == 1, got %v", p.Ingredientes[0].ProductId)
+	}
+
+	if p.Ingredientes[0].Quantity != data.CakeIngredients[0].Quantity {
+		t.Errorf("expected ingrediente.Quantity == 1, got %v", p.Ingredientes[0].Quantity)
 	}
 }
 
 func TestCake_GetAllByStatus(t *testing.T) {
-	tt := []struct {
-		name    string
-		status  bool
-		expect  []*models.Cake
-		err     error
-		prepare func(repo *spyRepo)
-	}{
-		{
-			name:   "should return an error if repository returns an error",
-			status: false,
-			expect: nil,
-			err:    DefaultRepositoryError,
-			prepare: func(repo *spyRepo) {
-				repo.err = fmt.Errorf("any error")
-			},
-		},
-		{
-			name:   "should return nil if everything is ok",
-			status: true,
-			expect: []*models.Cake{
-				{
-					Id:          1,
-					Name:        "any_cake",
-					Price:       10.0,
-					Description: "desc",
-					CakeIngredients: []models.CakeIngredients{
-						{ProductId: 1, Quantity: 1},
-					},
-				},
-			},
-			err: nil,
-			prepare: func(repo *spyRepo) {
-				repo.cake = &models.Cake{
-					Id:          1,
-					Name:        "any_cake",
-					Price:       10.0,
-					Description: "desc",
-					CakeIngredients: []models.CakeIngredients{
-						{ProductId: 1, Quantity: 1},
-					},
-				}
-			},
-		},
+	repo := new(cakeRepoInMemory)
+	app := NewCakeApp(repo)
+
+	data := &models.Cake{
+		Name:            "test",
+		Description:     "test",
+		Price:           1.0,
+		CakeIngredients: []models.CakeIngredients{{ProductId: 1, Quantity: 1}},
 	}
 
-	for _, test := range tt {
-		t.Run(test.name, func(t *testing.T) {
-			repo := &spyRepo{}
-			app := NewCakeApp(repo)
+	want, err := app.Create(context.Background(), data)
 
-			test.prepare(repo)
+	if err != nil {
+		t.Fatalf("expected nil, got %v", err)
+	}
 
-			p, err := app.GetAllByStatus(context.Background(), test.status)
+	got, err := app.GetAllByStatus(context.Background(), true)
 
-			if diff := cmp.Diff(test.err, err); diff != "" {
-				t.Errorf("expected error to be %v, got: %v - %v", test.err, err, diff)
-			}
+	if err != nil {
+		t.Fatalf("expected nil, got %v", err)
+	}
 
-			if diff := cmp.Diff(test.expect, p); diff != "" {
-				t.Error(diff)
-			}
-		})
+	if len(got) != 1 {
+		t.Errorf("expected len(got) == 1, got %v", len(got))
+	}
+
+	if got[0].Id != want.Id {
+		t.Errorf("expected got[0].Id == want.Id, got %v", got[0].Id)
 	}
 }
 
 func TestCake_ChangeStatus(t *testing.T) {
-	tt := []struct {
-		name    string
-		id      int
-		status  bool
-		err     error
-		prepare func(repo *spyRepo)
-	}{
-		{
-			name:   "should return an error if missing id",
-			status: false,
-			err:    IdRequiredError,
-			prepare: func(repo *spyRepo) {
-				repo.err = fmt.Errorf("any error")
-			},
-		},
-		{
-			name:   "should return an error if repository returns an error",
-			id:     1,
-			status: false,
-			err:    DefaultRepositoryError,
-			prepare: func(repo *spyRepo) {
-				repo.err = fmt.Errorf("any error")
-			},
-		},
-		{
-			name:    "should return nil if everything is ok",
-			status:  true,
-			id:      2,
-			err:     nil,
-			prepare: func(repo *spyRepo) {},
-		},
+	repo := new(cakeRepoInMemory)
+	app := NewCakeApp(repo)
+
+	if err := app.ChangeStatus(context.Background(), 0, false); err == nil {
+		t.Fatalf("expected nil, got %v", err)
 	}
 
-	for _, test := range tt {
-		t.Run(test.name, func(t *testing.T) {
-			repo := &spyRepo{}
-			app := NewCakeApp(repo)
+	data := &models.Cake{
+		Name:            "test",
+		Description:     "test",
+		Price:           1.0,
+		CakeIngredients: []models.CakeIngredients{{ProductId: 1, Quantity: 1}},
+	}
 
-			test.prepare(repo)
+	want, err := app.Create(context.Background(), data)
 
-			err := app.ChangeStatus(context.Background(), test.id, test.status)
+	if err != nil {
+		t.Fatalf("expected nil, got %v", err)
+	}
 
-			if diff := cmp.Diff(test.err, err); diff != "" {
-				t.Errorf("expected error to be %v, got: %v - %v", test.err, err, diff)
-			}
-		})
+	if err = app.ChangeStatus(context.Background(), want.Id, false); err != nil {
+		t.Fatalf("expected nil, got %v", err)
+	}
+
+	got, err := app.GetById(context.Background(), want.Id)
+
+	if err != nil {
+		t.Fatalf("expected nil, got %v", err)
+	}
+
+	if got.Status != false {
+		t.Errorf("expected got.Status == false, got %v", got.Status)
 	}
 }
 
 func TestCake_Update(t *testing.T) {
-	tt := []struct {
-		name    string
-		id      int
-		data    *models.Cake
-		err     error
-		prepare func(repo *spyRepo)
-	}{
-		{
-			name: "should return an error if missing id",
-			data: &models.Cake{},
-			err:  IdRequiredError,
-			prepare: func(repo *spyRepo) {
-				repo.err = fmt.Errorf("any error")
-			},
-		},
-		{
-			name: "should return an error if repository returns an error",
-			id:   1,
-			data: &models.Cake{},
-			err:  DefaultRepositoryError,
-			prepare: func(repo *spyRepo) {
-				repo.err = fmt.Errorf("any error")
-			},
-		},
-		{
-			name: "should return nil if everything is ok",
-			data: &models.Cake{},
-			id:   2,
-			err:  nil,
-			prepare: func(repo *spyRepo) {
-				repo.cake = &models.Cake{
-					Id:          2,
-					Name:        "any_cake",
-					Price:       10.0,
-					Description: "desc",
-					CakeIngredients: []models.CakeIngredients{
-						{ProductId: 1, Quantity: 1},
-					},
-				}
-			},
-		},
+	repo := new(cakeRepoInMemory)
+	app := NewCakeApp(repo)
+
+	if _, err := app.Update(context.Background(), 0, new(models.Cake)); err == nil {
+		t.Fatalf("expected %v, got nil", err)
 	}
 
-	for _, test := range tt {
-		t.Run(test.name, func(t *testing.T) {
-			repo := &spyRepo{}
-			app := NewCakeApp(repo)
-
-			test.prepare(repo)
-
-			_, err := app.Update(context.Background(), test.id, test.data)
-
-			if diff := cmp.Diff(test.err, err); diff != "" {
-				t.Errorf("expected error to be %v, got: %v - %v", test.err, err, diff)
-			}
-		})
+	data := &models.Cake{
+		Name:            "test",
+		Description:     "test",
+		Price:           1.0,
+		CakeIngredients: []models.CakeIngredients{{ProductId: 1, Quantity: 1}},
 	}
+
+	cake, err := app.Create(context.Background(), data)
+
+	if err != nil {
+		t.Fatalf("expected error nil, got %v", err)
+	}
+
+	want := *cake
+	want.Name = "test2"
+
+	got, err := app.Update(context.Background(), want.Id, &want)
+	if err != nil {
+		t.Fatalf("expected error nil, got %v", err)
+	}
+
+	if got.Name != want.Name {
+		t.Errorf("expected name = %v, got %v", want.Name, got.Name)
+	}
+
 }
-
 func TestCake_GetById(t *testing.T) {
-	tt := []struct {
-		name    string
-		id      int
-		data    *models.Cake
-		err     error
-		prepare func(repo *spyRepo)
-	}{
-		{
-			name: "should return an error if missing id",
-			data: &models.Cake{},
-			err:  IdRequiredError,
-			prepare: func(repo *spyRepo) {
-				repo.err = fmt.Errorf("any error")
-			},
-		},
-		{
-			name: "should return an error if repository returns an error",
-			id:   1,
-			data: &models.Cake{},
-			err:  DefaultRepositoryError,
-			prepare: func(repo *spyRepo) {
-				repo.err = fmt.Errorf("any error")
-			},
-		},
-		{
-			name: "should return nil if everything is ok",
-			data: &models.Cake{},
-			id:   2,
-			err:  nil,
-			prepare: func(repo *spyRepo) {
-				repo.cake = &models.Cake{
-					Id:          2,
-					Name:        "any_cake",
-					Price:       10.0,
-					Description: "desc",
-					CakeIngredients: []models.CakeIngredients{
-						{ProductId: 1, Quantity: 1},
-					},
-				}
-			},
-		},
+	repo := new(cakeRepoInMemory)
+	app := NewCakeApp(repo)
+
+	_, err := app.GetById(context.Background(), 0)
+
+	if err == nil {
+		t.Fatalf("expected %v, got nil", err)
 	}
 
-	for _, test := range tt {
-		t.Run(test.name, func(t *testing.T) {
-			repo := &spyRepo{}
-			app := NewCakeApp(repo)
+	data := new(models.Cake)
+	data.Name = "test"
+	data.Description = "test"
+	data.Price = 1.0
+	data.CakeIngredients = []models.CakeIngredients{{ProductId: 1, Quantity: 1}}
 
-			test.prepare(repo)
+	want, err := app.Create(context.Background(), data)
 
-			_, err := app.GetById(context.Background(), test.id)
+	if err != nil {
+		t.Fatalf("expected error nil, got %v", err)
+	}
 
-			if diff := cmp.Diff(test.err, err); diff != "" {
-				t.Errorf("expected error to be %v, got: %v - %v", test.err, err, diff)
-			}
-		})
+	got, err := app.GetById(context.Background(), want.Id)
+
+	if err != nil {
+		t.Fatalf("expected error nil, got %v", err)
+	}
+
+	if got.Id != want.Id {
+		t.Errorf("expected id %v, got %v", want.Id, got.Id)
 	}
 }

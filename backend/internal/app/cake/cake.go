@@ -37,16 +37,18 @@ func NewCakeApp(repo repository.CakeRepository) Cake {
 	}
 }
 
-func (c *cake) Create(ctx context.Context, date *models.Cake) (*models.Cake, error) {
-	if err := validateToInsert(date); err != nil {
+func (c *cake) Create(ctx context.Context, data *models.Cake) (*models.Cake, error) {
+	if err := validateToInsert(data); err != nil {
 		return nil, err
 	}
 
-	if err := c.repo.Insert(ctx, date); err != nil {
+	data.Status = true
+
+	if err := c.repo.Insert(ctx, data); err != nil {
 		return nil, DefaultRepositoryError
 	}
 
-	return date, nil
+	return data, nil
 }
 
 func (c *cake) GetAllByStatus(ctx context.Context, status bool) ([]*models.Cake, error) {

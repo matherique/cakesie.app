@@ -30,7 +30,7 @@ func NewCakeRepository(store store.Store) CakeRepository {
 
 func (br *cakeRepo) Insert(ctx context.Context, cake *models.Cake) error {
 	dml := `INSERT INTO cake
-	(name, price, created_at, updated_at) 
+	(Name, Price, created_at, updated_at) 
 	VALUES (name, price, created_at, updated_at) RETURNING *`
 
 	if err := br.store.DB().QueryRowContext(ctx, dml).Scan(&cake); err != nil {
