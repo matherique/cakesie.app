@@ -89,6 +89,18 @@ func (c *cake) Update(ctx context.Context, id int, data *models.Cake) (*models.C
 		return nil, DefaultRepositoryError
 	}
 
+	if err := c.repo.RemoveIngredients(ctx, id); err != nil {
+		return nil, DefaultRepositoryError
+	}
+
+	ingredients, err := c.addIngredient(ctx, data.CakeIngredients, id)
+
+	if err != nil {
+		return nil, DefaultRepositoryError
+	}
+
+	data.Ingredients = ingredients
+
 	return data, nil
 }
 

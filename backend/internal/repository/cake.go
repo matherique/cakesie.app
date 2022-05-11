@@ -15,6 +15,7 @@ type CakeRepository interface {
 	Update(ctx context.Context, id int, cake *models.Cake) error
 	GetById(ctx context.Context, id int) (*models.Cake, error)
 	InsertIngredient(ctx context.Context, ingredient *models.Ingredient) error
+	RemoveIngredients(ctx context.Context, cakeId int) error
 }
 
 type cakeRepo struct {
@@ -58,5 +59,9 @@ func (br *cakeRepo) GetById(ctx context.Context, id int) (*models.Cake, error) {
 }
 
 func (br *cakeRepo) InsertIngredient(ctx context.Context, ingredient *models.Ingredient) error {
+	return fmt.Errorf("not implemented")
+}
+
+func (br *cakeRepo) RemoveIngredients(ctx context.Context, cakeId int) error {
 	return fmt.Errorf("not implemented")
 }

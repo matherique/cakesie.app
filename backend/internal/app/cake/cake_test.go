@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/matherique/cakesie.app-backend/internal/models"
 )
 
@@ -90,6 +91,11 @@ func (s *cakeRepoInMemory) GetById(ctx context.Context, id int) (*models.Cake, e
 }
 
 func (s *cakeRepoInMemory) InsertIngredient(ctx context.Context, ingredient *models.Ingredient) error {
+	return nil
+}
+
+func (s *cakeRepoInMemory) RemoveIngredients(ctx context.Context, cakeId int) error {
+	s.cake[cakeId-1].Ingredients = nil
 	return nil
 }
 
@@ -214,10 +220,14 @@ func TestCake_Update(t *testing.T) {
 	}
 
 	data := &models.Cake{
-		Name:            "test",
-		Description:     "test",
-		Price:           1.0,
-		CakeIngredients: []models.CakeIngredients{{ProductId: 1, Quantity: 1}},
+		Name:        "test",
+		Description: "test",
+		Price:       1.0,
+		CakeIngredients: []models.CakeIngredients{
+			{ProductId: 1, Quantity: 1},
+			{ProductId: 2, Quantity: 1},
+			{ProductId: 3, Quantity: 4},
+		},
 	}
 
 	cake, err := app.Create(context.Background(), data)
@@ -226,16 +236,26 @@ func TestCake_Update(t *testing.T) {
 		t.Fatalf("expected error nil, got %v", err)
 	}
 
-	want := *cake
-	want.Name = "test2"
+	newData := *cake
+	newData.Name = "test2"
+	newData.CakeIngredients = []models.CakeIngredients{
+		{ProductId: 1, Quantity: 3},
+		{ProductId: 3, Quantity: 4},
+	}
 
-	got, err := app.Update(context.Background(), want.Id, &want)
+	got, err := app.Update(context.Background(), newData.Id, &newData)
+
 	if err != nil {
 		t.Fatalf("expected error nil, got %v", err)
 	}
 
-	if got.Name != want.Name {
-		t.Errorf("expected name = %v, got %v", want.Name, got.Name)
+	want := []*models.Ingredient{
+		{CakeId: cake.Id, ProductId: 1, Quantity: 3},
+		{CakeId: cake.Id, ProductId: 3, Quantity: 4},
+	}
+
+	if diff := cmp.Diff(got.Ingredients, want); diff != "" {
+		t.Errorf("unexpected diff: %v", diff)
 	}
 
 }
