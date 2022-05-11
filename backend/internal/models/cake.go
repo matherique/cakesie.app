@@ -1,13 +1,16 @@
 package models
 
-import (
-	"time"
-)
+type CakeIngredients struct {
+	ProductId int `json:"product_id,omitempty"`
+	Quantity  int `json:"quantity,omitempty"`
+}
 
 type Cake struct {
-	Id        int       `json:"id,omitempty"`
-	Name      string    `json:"name,omitempty"`
-	Price     float64   `json:"photo,omitempty"`
-	CreatedAt time.Time `json:"created_at,omitempty"`
-	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	Id              int               `json:"Id,omitempty"`
+	Name            string            `json:"Name,omitempty"`
+	Price           float64           `json:"Photo,omitempty"`
+	Description     string            `json:"Description,omitempty"`
+	Status          bool              `json:"Status,omitempty"`
+	Ingredients     []*Ingredient     `json:"Ingredientes,omitempty"`
+	CakeIngredients []CakeIngredients `json:"CakeIngredients,omitempty"`
 }

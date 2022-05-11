@@ -11,8 +11,8 @@ func (m *NotFound) Error() string {
 	return m.Message
 }
 
-func NewNotFound(message string) *InternalServerError {
-	return &InternalServerError{http.StatusNotFound, message}
+func NewNotFound(message string) error {
+	return &NotFound{http.StatusNotFound, message}
 }
 
 type BadRequest struct {
@@ -20,7 +20,7 @@ type BadRequest struct {
 	Message string `json:"message"`
 }
 
-func NewBadRequest(message string) *BadRequest {
+func NewBadRequest(message string) error {
 	return &BadRequest{http.StatusBadRequest, message}
 }
 
@@ -33,7 +33,7 @@ type InternalServerError struct {
 	Message string `json:"message"`
 }
 
-func NewInternalServerError(message string) *InternalServerError {
+func NewInternalServerError(message string) error {
 	return &InternalServerError{http.StatusInternalServerError, message}
 }
 

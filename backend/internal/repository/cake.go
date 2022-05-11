@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/matherique/cakesie.app-backend/internal/models"
 	"github.com/matherique/cakesie.app-backend/pkg/store"
@@ -11,6 +10,12 @@ import (
 
 type CakeRepository interface {
 	Insert(ctx context.Context, cake *models.Cake) error
+	GetAllByStatus(ctx context.Context, status bool) ([]*models.Cake, error)
+	UpdateStatus(ctx context.Context, id int, status bool) error
+	Update(ctx context.Context, id int, cake *models.Cake) error
+	GetById(ctx context.Context, id int) (*models.Cake, error)
+	InsertIngredient(ctx context.Context, ingredient *models.Ingredient) error
+	RemoveIngredients(ctx context.Context, cakeId int) error
 }
 
 type cakeRepo struct {
@@ -26,11 +31,8 @@ func NewCakeRepository(store store.Store) CakeRepository {
 }
 
 func (br *cakeRepo) Insert(ctx context.Context, cake *models.Cake) error {
-	cake.CreatedAt = time.Now()
-	cake.UpdatedAt = time.Now()
-
 	dml := `INSERT INTO cake
-	(name, price, created_at, updated_at) 
+	(Name, Price, created_at, updated_at) 
 	VALUES (name, price, created_at, updated_at) RETURNING *`
 
 	if err := br.store.DB().QueryRowContext(ctx, dml).Scan(&cake); err != nil {
@@ -38,4 +40,28 @@ func (br *cakeRepo) Insert(ctx context.Context, cake *models.Cake) error {
 	}
 
 	return nil
+}
+
+func (br *cakeRepo) GetAllByStatus(ctx context.Context, status bool) ([]*models.Cake, error) {
+	return nil, fmt.Errorf("not implemented")
+}
+
+func (br *cakeRepo) UpdateStatus(ctx context.Context, id int, status bool) error {
+	return fmt.Errorf("not implemented")
+}
+
+func (br *cakeRepo) Update(ctx context.Context, id int, cake *models.Cake) error {
+	return fmt.Errorf("not implemented")
+}
+
+func (br *cakeRepo) GetById(ctx context.Context, id int) (*models.Cake, error) {
+	return nil, fmt.Errorf("not implemented")
+}
+
+func (br *cakeRepo) InsertIngredient(ctx context.Context, ingredient *models.Ingredient) error {
+	return fmt.Errorf("not implemented")
+}
+
+func (br *cakeRepo) RemoveIngredients(ctx context.Context, cakeId int) error {
+	return fmt.Errorf("not implemented")
 }
