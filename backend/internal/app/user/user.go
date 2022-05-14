@@ -2,10 +2,12 @@ package user
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/matherique/cakesie.app-backend/internal/models"
 	"github.com/matherique/cakesie.app-backend/internal/repository"
 	"github.com/matherique/cakesie.app-backend/pkg/cryptography"
+	"github.com/matherique/cakesie.app-backend/pkg/errors"
 )
 
 type Creater interface {
@@ -24,6 +26,7 @@ type Updater interface {
 
 type User interface {
 	Creater
+	Getter
 }
 
 type user struct {
@@ -55,4 +58,26 @@ func (u *user) Create(ctx context.Context, data *models.User) (*models.User, err
 	}
 
 	return data, nil
+}
+
+func (u *user) GetById(ctx context.Context, id int) (*models.User, error) {
+	if id == 0 {
+		return nil, errors.NewBadRequest("id must be greater than 0")
+	}
+
+	user, err := u.repo.GetById(ctx, id)
+
+	if err != nil {
+		return nil, repository.DefaultRepositoryError
+	}
+
+	if user == nil {
+		return nil, errors.NewNotFound(fmt.Sprintf("user with id %d not found", id))
+	}
+
+	return user, nil
+}
+
+func (u *user) GetAll(ctx context.Context) ([]*models.User, error) {
+	return nil, fmt.Errorf("not implemented")
 }

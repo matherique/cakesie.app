@@ -13,7 +13,16 @@ type userRepoInMemory struct {
 
 func (u *userRepoInMemory) Insert(ctx context.Context, data *models.User) error {
 	data.Id = len(u.users) + 1
+	u.users = append(u.users, data)
 	return nil
+}
+
+func (u *userRepoInMemory) GetById(ctx context.Context, id int) (*models.User, error) {
+	user := u.users[id-1]
+
+	user.Password = ""
+
+	return user, nil
 }
 
 type hasher struct{}
@@ -56,6 +65,42 @@ func TestUser_Create(t *testing.T) {
 
 	if got.Password == pass {
 		t.Fatalf("expected password to be hashed, got %v", got.Password)
+	}
+
+}
+
+func TestUser_GetById(t *testing.T) {
+	repo := new(userRepoInMemory)
+	hasher := new(hasher)
+	app := NewUserApp(repo, hasher)
+
+	var data models.User
+	data.Email = "any_email@teste.com"
+	data.Password = "any_password"
+	data.Name = "any_name"
+	data.Phone = "999999999"
+
+	user, err := app.Create(context.Background(), &data)
+
+	if err != nil {
+		t.Fatalf("expected error nil, got %v", err)
+	}
+
+	got, err := app.GetById(context.Background(), 1)
+	if err != nil {
+		t.Fatalf("expected error nil, got %v", err)
+	}
+
+	if len(got.Password) != 0 {
+		t.Fatalf("expected password to be empty, got %v", got.Password)
+	}
+
+	if got.Id != user.Id {
+		t.Fatalf("expected id to be %v, got %v", user.Id, got.Id)
+	}
+
+	if got.Email != data.Email {
+		t.Fatalf("expected email to be %v, got %v", user.Email, got.Email)
 	}
 
 }
