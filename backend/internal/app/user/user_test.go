@@ -25,6 +25,17 @@ func (u *userRepoInMemory) GetById(ctx context.Context, id int) (*models.User, e
 	return user, nil
 }
 
+func (u *userRepoInMemory) GetAll(ctx context.Context) ([]*models.User, error) {
+	users := make([]*models.User, len(u.users))
+
+	for i, user := range u.users {
+		user.Password = ""
+		users[i] = user
+	}
+
+	return users, nil
+}
+
 type hasher struct{}
 
 func (h *hasher) Hash(data []byte) ([]byte, error) {
@@ -101,6 +112,40 @@ func TestUser_GetById(t *testing.T) {
 
 	if got.Email != data.Email {
 		t.Fatalf("expected email to be %v, got %v", user.Email, got.Email)
+	}
+
+}
+
+func TestUser_GetAll(t *testing.T) {
+	repo := new(userRepoInMemory)
+	hasher := new(hasher)
+	app := NewUserApp(repo, hasher)
+
+	var data models.User
+	data.Name = "any_name"
+	data.Email = "any_email@teste.com"
+	data.Password = "any_password"
+	data.Phone = "999999999"
+
+	_, err := app.Create(context.Background(), &data)
+	_, err = app.Create(context.Background(), &data)
+
+	if err != nil {
+		t.Fatalf("expected error nil, got %q", err)
+	}
+
+	got, err := app.GetAll(context.Background())
+
+	if err != nil {
+		t.Fatalf("expected error nil, got %q", err)
+	}
+
+	if len(got) != 2 {
+		t.Fatalf("expected len to be 1, got %v", len(got))
+	}
+
+	if len(got[0].Password) > 0 && len(got[1].Password) > 0 {
+		t.Fatal("expected password to be empty")
 	}
 
 }

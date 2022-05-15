@@ -79,5 +79,11 @@ func (u *user) GetById(ctx context.Context, id int) (*models.User, error) {
 }
 
 func (u *user) GetAll(ctx context.Context) ([]*models.User, error) {
-	return nil, fmt.Errorf("not implemented")
+	users, err := u.repo.GetAll(ctx)
+
+	if err != nil {
+		return nil, repository.DefaultRepositoryError
+	}
+
+	return users, nil
 }
