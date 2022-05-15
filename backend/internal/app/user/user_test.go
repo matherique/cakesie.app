@@ -195,10 +195,19 @@ func TestUser_Login(t *testing.T) {
 		t.Fatalf("expected error nil, got %q", err)
 	}
 
+	if _, err := app.Login(context.Background(), "error_email@teste.com", "any_password"); err == nil {
+		t.Fatalf("expected error, got nil")
+	}
+
+	if _, err := app.Login(context.Background(), "any_email@teste.com", "wrong_password"); err == nil {
+		t.Fatalf("expected error, got nil")
+	}
+
 	email := "any_email@teste.com"
 	password := "any_password"
 
 	got, err := app.Login(context.Background(), email, password)
+
 	if err != nil {
 		t.Fatalf("expected error nil, got %q", err)
 	}
