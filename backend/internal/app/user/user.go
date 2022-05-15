@@ -12,6 +12,7 @@ import (
 
 type Creater interface {
 	Create(ctx context.Context, data *models.User) (*models.User, error)
+	Login(ctx context.Context, email, password string) (*TokenData, error)
 }
 
 type Getter interface {
@@ -32,12 +33,14 @@ type User interface {
 type user struct {
 	repo   repository.UserRepository
 	hasher cryptography.Hasher
+	token  cryptography.Tokener
 }
 
-func NewUserApp(repo repository.UserRepository, hasher cryptography.Hasher) User {
+func NewUserApp(repo repository.UserRepository, hasher cryptography.Hasher, token cryptography.Tokener) User {
 	return &user{
 		repo:   repo,
 		hasher: hasher,
+		token:  token,
 	}
 }
 
@@ -86,4 +89,28 @@ func (u *user) GetAll(ctx context.Context) ([]*models.User, error) {
 	}
 
 	return users, nil
+}
+
+func (u *user) Login(ctx context.Context, email, password string) (*TokenData, error) {
+	user, err := u.repo.FindByEmail(ctx, email)
+
+	if err != nil {
+		return nil, errors.NewBadRequest("invalid email or password")
+	}
+
+	if !u.hasher.Validate([]byte(password), []byte(user.Password)) {
+		return nil, errors.NewBadRequest("invalid email or password")
+	}
+
+	token, err := u.token.Generate(user.Id, user.Email)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &TokenData{
+		Id:    user.Id,
+		Token: string(token),
+		Name:  user.Name,
+	}, nil
 }

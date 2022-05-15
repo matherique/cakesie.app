@@ -1,7 +1,9 @@
 package user
 
 import (
+	"bytes"
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/matherique/cakesie.app-backend/internal/models"
@@ -36,20 +38,44 @@ func (u *userRepoInMemory) GetAll(ctx context.Context) ([]*models.User, error) {
 	return users, nil
 }
 
-type hasher struct{}
+func (u *userRepoInMemory) FindByEmail(ctx context.Context, email string) (*models.User, error) {
+	for _, user := range u.users {
+		if user.Email == email {
+			return user, nil
+		}
+	}
+
+	return nil, fmt.Errorf("not found")
+}
+
+type hasher struct {
+	unhashed []byte
+}
 
 func (h *hasher) Hash(data []byte) ([]byte, error) {
+	h.unhashed = data
 	return []byte("hashed"), nil
 }
 
 func (h *hasher) Validate(data []byte, hash []byte) bool {
+	return bytes.Compare(data, h.unhashed) == 0
+}
+
+type token struct{}
+
+func (*token) Generate(data ...interface{}) ([]byte, error) {
+	return []byte("token"), nil
+}
+
+func (*token) Validate(data []byte, hash []byte) bool {
 	return true
 }
 
 func TestUser_Create(t *testing.T) {
 	repo := new(userRepoInMemory)
 	hasher := new(hasher)
-	app := NewUserApp(repo, hasher)
+	token := new(token)
+	app := NewUserApp(repo, hasher, token)
 
 	data := new(models.User)
 
@@ -83,7 +109,8 @@ func TestUser_Create(t *testing.T) {
 func TestUser_GetById(t *testing.T) {
 	repo := new(userRepoInMemory)
 	hasher := new(hasher)
-	app := NewUserApp(repo, hasher)
+	token := new(token)
+	app := NewUserApp(repo, hasher, token)
 
 	var data models.User
 	data.Email = "any_email@teste.com"
@@ -119,7 +146,8 @@ func TestUser_GetById(t *testing.T) {
 func TestUser_GetAll(t *testing.T) {
 	repo := new(userRepoInMemory)
 	hasher := new(hasher)
-	app := NewUserApp(repo, hasher)
+	token := new(token)
+	app := NewUserApp(repo, hasher, token)
 
 	var data models.User
 	data.Name = "any_name"
@@ -148,4 +176,42 @@ func TestUser_GetAll(t *testing.T) {
 		t.Fatal("expected password to be empty")
 	}
 
+}
+
+func TestUser_Login(t *testing.T) {
+	repo := new(userRepoInMemory)
+	hasher := new(hasher)
+	token := new(token)
+	app := NewUserApp(repo, hasher, token)
+
+	var data models.User
+	data.Name = "any_name"
+	data.Email = "any_email@teste.com"
+	data.Password = "any_password"
+	data.Phone = "999999999"
+
+	_, err := app.Create(context.Background(), &data)
+	if err != nil {
+		t.Fatalf("expected error nil, got %q", err)
+	}
+
+	email := "any_email@teste.com"
+	password := "any_password"
+
+	got, err := app.Login(context.Background(), email, password)
+	if err != nil {
+		t.Fatalf("expected error nil, got %q", err)
+	}
+
+	if len(got.Token) == 0 {
+		t.Fatal("expected token to be set")
+	}
+
+	if len(got.Name) == 0 {
+		t.Fatal("expected name to be set")
+	}
+
+	if got.Id == 0 {
+		t.Fatal("expected id to be set")
+	}
 }
