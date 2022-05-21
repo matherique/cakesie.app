@@ -48,6 +48,25 @@ func (u *userRepoInMemory) FindByEmail(ctx context.Context, email string) (*mode
 	return nil, fmt.Errorf("not found")
 }
 
+func (u *userRepoInMemory) Update(ctx context.Context, id int, data *models.User) (*models.User, error) {
+	var founded *models.User
+
+	for _, user := range u.users {
+		if user.Id == id {
+			founded = user
+			break
+		}
+	}
+
+	if founded == nil {
+		return nil, fmt.Errorf("not found")
+	}
+
+	founded = data
+
+	return founded, nil
+}
+
 type hasher struct {
 	unhashed []byte
 }
@@ -61,10 +80,12 @@ func (h *hasher) Validate(data []byte, hash []byte) bool {
 	return bytes.Compare(data, h.unhashed) == 0
 }
 
-type token struct{}
+type token struct {
+	err error
+}
 
-func (*token) Generate(data ...interface{}) ([]byte, error) {
-	return []byte("token"), nil
+func (t *token) Generate(data ...interface{}) ([]byte, error) {
+	return []byte("token"), t.err
 }
 
 func (*token) Validate(data []byte, hash []byte) bool {
@@ -190,8 +211,7 @@ func TestUser_Login(t *testing.T) {
 	data.Password = "any_password"
 	data.Phone = "999999999"
 
-	_, err := app.Create(context.Background(), &data)
-	if err != nil {
+	if _, err := app.Create(context.Background(), &data); err != nil {
 		t.Fatalf("expected error nil, got %q", err)
 	}
 
@@ -222,5 +242,40 @@ func TestUser_Login(t *testing.T) {
 
 	if got.Id == 0 {
 		t.Fatal("expected id to be set")
+	}
+
+	token.err = fmt.Errorf("error")
+	if _, err := app.Login(context.Background(), email, password); err == nil {
+		t.Fatal("expected error, got nil")
+	}
+}
+
+func TestUser_Update(t *testing.T) {
+	repo := new(userRepoInMemory)
+	hasher := new(hasher)
+	token := new(token)
+	app := NewUserApp(repo, hasher, token)
+
+	var data models.User
+	data.Name = "any_name"
+	data.Email = "any_email@teste.com"
+	data.Password = "any_password"
+	data.Phone = "999999999"
+
+	newUser, err := app.Create(context.Background(), &data)
+	if err != nil {
+		t.Fatalf("expected error nil, got %q", err)
+	}
+
+	newUser.Name = "new_name"
+
+	got, err := app.Update(context.Background(), newUser.Id, newUser)
+
+	if err != nil {
+		t.Fatalf("expected error nil, got %q", err)
+	}
+
+	if got.Name != newUser.Name {
+		t.Fatalf("expected name to be %v, got %v", newUser.Name, got.Name)
 	}
 }

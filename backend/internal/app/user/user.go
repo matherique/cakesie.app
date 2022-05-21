@@ -22,12 +22,13 @@ type Getter interface {
 
 type Updater interface {
 	Update(ctx context.Context, id int, data *models.User) (*models.User, error)
-	ChageRole(ctx context.Context, id int, role string) error
+	// ChageRole(ctx context.Context, id int, role string) error
 }
 
 type User interface {
 	Creater
 	Getter
+	Updater
 }
 
 type user struct {
@@ -105,7 +106,7 @@ func (u *user) Login(ctx context.Context, email, password string) (*TokenData, e
 	token, err := u.token.Generate(user.Id, user.Email)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.NewInternalServerError("could not generate token")
 	}
 
 	return &TokenData{
@@ -113,4 +114,18 @@ func (u *user) Login(ctx context.Context, email, password string) (*TokenData, e
 		Token: string(token),
 		Name:  user.Name,
 	}, nil
+}
+
+func (u *user) Update(ctx context.Context, id int, data *models.User) (*models.User, error) {
+	if id == 0 {
+		return nil, errors.NewBadRequest("id must be greater than 0")
+	}
+
+	updated, err := u.repo.Update(ctx, id, data)
+
+	if err != nil {
+		return nil, repository.DefaultRepositoryError
+	}
+
+	return updated, nil
 }
