@@ -121,6 +121,13 @@ func (u *user) Update(ctx context.Context, id int, data *models.User) (*models.U
 		return nil, errors.NewBadRequest("id must be greater than 0")
 	}
 
+	hashed, err := u.hasher.Hash([]byte(data.Password))
+	if err != nil {
+		return nil, err
+	}
+
+	data.Password = string(hashed)
+
 	updated, err := u.repo.Update(ctx, id, data)
 
 	if err != nil {

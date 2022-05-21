@@ -268,6 +268,7 @@ func TestUser_Update(t *testing.T) {
 	}
 
 	newUser.Name = "new_name"
+	newUser.Password = "new_password"
 
 	got, err := app.Update(context.Background(), newUser.Id, newUser)
 
@@ -275,7 +276,11 @@ func TestUser_Update(t *testing.T) {
 		t.Fatalf("expected error nil, got %q", err)
 	}
 
-	if got.Name != newUser.Name {
+	if got.Name != "new_name" {
 		t.Fatalf("expected name to be %v, got %v", newUser.Name, got.Name)
+	}
+
+	if got.Password == "new_password" || got.Password == "any_password" {
+		t.Fatalf("expected password to be hashed, got %v", got.Password)
 	}
 }
