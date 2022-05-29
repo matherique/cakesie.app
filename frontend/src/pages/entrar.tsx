@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import UnauthenticatedClient from "../components/unauthenticated-client";
 import { useForm } from "react-hook-form";
+import { FaSketch } from "react-icons/fa";
 
 type LoginInput = {
   email: string;
