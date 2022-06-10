@@ -5,28 +5,12 @@ import Bolo from "../../public/bolo.jpeg";
 
 export default function CakeDetails() {
   return (
-    <Layout>
-      <nav className="bg-grey-light rounded-md w-full">
-        <ol className="list-reset flex">
-          <li>
-            <a href="#" className="text-purple-600 hover:text-purple-700">
-              Home
-            </a>
-          </li>
-          <li>
-            <span className="text-gray-500 mx-2">{`>`}</span>
-          </li>
-          <li>
-            <a href="#" className="text-purple-600 hover:text-purple-700">
-              Bolo
-            </a>
-          </li>
-          <li>
-            <span className="text-gray-500 mx-2">{`>`}</span>
-          </li>
-          <li className="text-gray-500">Bolo de chocolate</li>
-        </ol>
-      </nav>
+    <Layout
+      breadcrumb={[
+        { href: "/", label: "Home" },
+        { href: "/bolo-de-cenoura", label: "Bolo de Cenoura" },
+      ]}
+    >
       <h1 className="font-medium leading-tight text-3xl mt-5 mb-2 text-purple-800">
         Bolo de chocolate
       </h1>

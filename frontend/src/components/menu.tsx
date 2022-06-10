@@ -34,8 +34,10 @@ export default function Menu() {
               Entrar
             </a>
           </Link>
-          <Link href="/carrinho-de-compra">
-            <CartIcon hasItens={false} />
+          <Link href="/carrinho-de-compras">
+            <a>
+              <CartIcon hasItens={false} />
+            </a>
           </Link>
         </div>
       </div>
