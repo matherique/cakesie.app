@@ -138,7 +138,7 @@ func TestStock_GetAllStatics(t *testing.T) {
 		t.Fatalf("expected error nil, got %v", err)
 	}
 
-	if len(got) !=  {
+	if len(got) != 0 {
 		t.Fatalf("expected len(got) != 2, got %v", len(got))
 	}
 
