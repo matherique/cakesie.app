@@ -3,8 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 import Layout from "../components/layout";
 import Bolo from "../public/bolo.jpeg";
+import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
+  const hello = trpc.useQuery(['hello', { text: 'client' }]);
+  console.log(hello)
+
   return (
     <Layout>
       <div className="relative">
