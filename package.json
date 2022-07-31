@@ -1,12 +1,13 @@
 {
-  "name": "Cakesie.app",
+  "name": "cakesie.app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^4.1.1",
