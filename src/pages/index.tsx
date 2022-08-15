@@ -4,24 +4,23 @@ import Link from "next/link";
 import Layout from "../components/layout";
 import Bolo from "../../public/bolo.jpeg";
 import { trpc } from "../utils/trpc";
+import { Cake } from "@prisma/client";
 
-const CakeCard: React.FC<{ id: number }> = ({ id }) => {
+const CakeCard: React.FC<{ cake: Cake }> = ({ cake }) => {
   return (
     <div className="basis-1/2 shadow-md p-2">
       <div className="flex">
-        <div className="w-3/4 h-full">
+        <div className="w-13">
+          {/* TODO: verificar como arrumar o tamanho da imagem, talvez olhar video do theo */}
           <Image src={Bolo} alt="logo" objectFit="contain" />
         </div>
         <div className="flex flex-col justify-start pr-2 pl-2">
-          <h5 className="basis-1/3 text-gray-900 text-xl font-medium ">
-            Card title
+          <h5 className="text-gray-900 text-xl font-medium pb-2">
+            {cake.name}
           </h5>
-          <p className="basis-2/3 text-gray-700 text-base">
-            This is a wider card with supporting text below as a natural lead-in
-            to additional content. This content is a little bit longer.
-          </p>
-          <Link href={`/bolo/${id}`}>
-            <a className="basis-1/3 place-self-end inline-block px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out">
+          <p className="text-gray-700 text-base">{cake.description}</p>
+          <Link href={`/bolo/${cake.id}`}>
+            <a className="place-self-end inline-block px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out">
               Detalhes
             </a>
           </Link>
@@ -32,8 +31,11 @@ const CakeCard: React.FC<{ id: number }> = ({ id }) => {
 };
 
 const Home: NextPage = () => {
-  const hello = trpc.useQuery(["example.hello", { text: "client" }]);
-  console.log(hello);
+  const { data, isLoading } = trpc.useQuery(["cake.getAll"]);
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <Layout>
@@ -44,9 +46,7 @@ const Home: NextPage = () => {
         />
       </div>
       <div className="container flex flex-wrap mx-auto gap-y-4  mt-10">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((id) => (
-          <CakeCard id={id} key={id} />
-        ))}
+        {data && data.map((cake) => <CakeCard cake={cake} key={cake.id} />)}
       </div>
       <div className="flex justify-center mb-20 mt-5">
         <nav aria-label="Page navigation example">
