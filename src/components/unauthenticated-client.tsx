@@ -1,6 +1,6 @@
 import Image from "next/image";
 import * as React from "react";
-import Logo from "../public/logo.png";
+import Logo from "@/public/logo.png";
 
 type Props = {
   children: React.ReactNode;

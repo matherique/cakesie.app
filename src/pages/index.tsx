@@ -1,9 +1,9 @@
 import type { NextPage } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import Layout from "../components/layout";
-import Bolo from "../public/bolo.jpeg";
-import { trpc } from "../utils/trpc";
+import Layout from "@/components/layout";
+import Bolo from "@/public/bolo.jpeg";
+import { trpc } from "@/utils/trpc";
 import { Cake } from "@prisma/client";
 
 const CakeCard: React.FC<{ cake: Cake }> = ({ cake }) => {
@@ -32,10 +32,6 @@ const CakeCard: React.FC<{ cake: Cake }> = ({ cake }) => {
 
 const Home: NextPage = () => {
   const { data, isLoading } = trpc.useQuery(["cake.getAll"]);
-
-  if (isLoading) {
-    return null;
-  }
 
   return (
     <Layout>

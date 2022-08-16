@@ -2,7 +2,7 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { FaCartPlus, FaShoppingCart } from "react-icons/fa";
-import Logo from "../public/logo.png";
+import Logo from "@/public/logo.png";
 
 type BreadcrumbItem = {
   href: string;
@@ -56,7 +56,6 @@ function Menu() {
 }
 
 export default function Layout({ children, breadcrumb }: Props) {
-  let a = [1, 2, 3, 4, 5];
   return (
     <section className="">
       <div className="mx-auto w-8/12">
