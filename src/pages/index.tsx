@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import Layout from "../components/layout";
-import Bolo from "../../public/bolo.jpeg";
+import Bolo from "../public/bolo.jpeg";
 import { trpc } from "../utils/trpc";
 import { Cake } from "@prisma/client";
 

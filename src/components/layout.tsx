@@ -2,7 +2,7 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { FaCartPlus, FaShoppingCart } from "react-icons/fa";
-import Logo from "../../public/logo.png";
+import Logo from "../public/logo.png";
 
 type BreadcrumbItem = {
   href: string;
@@ -13,8 +13,6 @@ type Props = {
   children: React.ReactNode;
   breadcrumb?: BreadcrumbItem[];
 };
-
-
 
 function CartIcon({ hasItens }: { hasItens: boolean }) {
   if (hasItens) {
