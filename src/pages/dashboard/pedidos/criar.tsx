@@ -59,9 +59,11 @@ const CriarPedido: NextPage = () => {
             <span className="font-bold">Telefone: </span>(12) 997713951
           </p>
         </div>
-        <button className="px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out">
-          Próximo
-        </button>
+        <div>
+          <button className="px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out">
+            Próximo
+          </button>
+        </div>
       </div>
     </DashboardLayout>
   );
