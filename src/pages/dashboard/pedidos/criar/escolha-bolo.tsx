@@ -1,15 +1,8 @@
-import { useCriarPedido } from "@/context/criar-pedido-context";
-import CriarPedidoLayout from "./criar-layout";
+import CriarPedidoLayout from "@/pages/dashboard/pedidos/criar/criar-layout";
 
-const Step1: React.FC = () => {
-  const context = useCriarPedido();
-
-  function handleNext() {
-    // next();
-  }
-
+const Step2: React.FC = () => {
   return (
-    <CriarPedidoLayout step={1}>
+    <CriarPedidoLayout step={2}>
       <div className="w-full flex gap-2 my-6">
         <input
           className="w-full px-4 py-2 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-purple-600 focus:outline-none"
@@ -24,14 +17,14 @@ const Step1: React.FC = () => {
           <thead className="text-left">
             <tr>
               <th>Nome</th>
-              <th>Telefone</th>
+              <th>Preço</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Matheus Henrique dos Santos</td>
-              <td>(12) 997713951</td>
+              <td>Bolo de Chocolate</td>
+              <td>R$ 1000</td>
               <td>
                 <button className="px-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out">
                   +
@@ -55,10 +48,7 @@ const Step1: React.FC = () => {
           </p>
         </div>
         <div className="self-end">
-          <button
-            className="px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out"
-            onClick={handleNext}
-          >
+          <button className="px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out">
             Próximo
           </button>
         </div>
@@ -67,4 +57,4 @@ const Step1: React.FC = () => {
   );
 };
 
-export default Step1;
+export default Step2;

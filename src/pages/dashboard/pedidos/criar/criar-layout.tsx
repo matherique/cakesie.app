@@ -2,9 +2,9 @@ import DashboardLayout from "@/components/dashboard-layout";
 import { CriarPedidoProvider } from "@/context/criar-pedido-context";
 import next from "next";
 
-const TitleSteps: React.FC<{ currentStep: 1 | 2 | 3 | 4 | 5 }> = ({
-  currentStep,
-}) => {
+type Steps = 1 | 2 | 3 | 4 | 5;
+
+const TitleSteps: React.FC<{ currentStep: Steps }> = ({ currentStep }) => {
   return (
     <div className="w-full my-6">
       <span className={currentStep === 1 ? `font-bold` : ``}>
@@ -26,12 +26,18 @@ const TitleSteps: React.FC<{ currentStep: 1 | 2 | 3 | 4 | 5 }> = ({
   );
 };
 
-function CriarPedidoLayout({ children }: { children: React.ReactNode }) {
+function CriarPedidoLayout({
+  children,
+  step,
+}: {
+  children: React.ReactNode;
+  step: Steps;
+}) {
   return (
     <CriarPedidoProvider>
       <DashboardLayout>
         <div className="grid grid-rows-layout">
-          <TitleSteps currentStep={1} />
+          <TitleSteps currentStep={step} />
           {children}
         </div>
       </DashboardLayout>
