@@ -1,8 +1,10 @@
-import CriarPedidoLayout from "@/pages/dashboard/pedidos/criar/criar-layout";
+import { Title } from "./title";
+import { StepProps } from "./types";
 
-const Step2: React.FC = () => {
+const EscolhaBoloStep: React.FC<StepProps> = () => {
   return (
-    <CriarPedidoLayout step={2}>
+    <div className="grid grid-rows-layout">
+      <Title step={2} />
       <div className="w-full flex gap-2 my-6">
         <input
           className="w-full px-4 py-2 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-purple-600 focus:outline-none"
@@ -53,8 +55,8 @@ const Step2: React.FC = () => {
           </button>
         </div>
       </div>
-    </CriarPedidoLayout>
+    </div>
   );
 };
 
-export default Step2;
+export default EscolhaBoloStep;

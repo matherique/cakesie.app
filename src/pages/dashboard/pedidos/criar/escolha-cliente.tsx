@@ -1,15 +1,10 @@
-import { useCriarPedido } from "@/context/criar-pedido-context";
-import CriarPedidoLayout from "./criar-layout";
+import { Title } from "./title";
+import { StepProps } from "./types";
 
-const Step1: React.FC = () => {
-  const context = useCriarPedido();
-
-  function handleNext() {
-    // next();
-  }
-
+const EscolhaClienteStep: React.FC<StepProps> = ({ onNext }) => {
   return (
-    <CriarPedidoLayout step={1}>
+    <div className="grid grid-rows-layout">
+      <Title step={1} />
       <div className="w-full flex gap-2 my-6">
         <input
           className="w-full px-4 py-2 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-purple-600 focus:outline-none"
@@ -57,14 +52,14 @@ const Step1: React.FC = () => {
         <div className="self-end">
           <button
             className="px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out"
-            onClick={handleNext}
+            onClick={onNext}
           >
             Próximo
           </button>
         </div>
       </div>
-    </CriarPedidoLayout>
+    </div>
   );
 };
 
-export default Step1;
+export default EscolhaClienteStep;
