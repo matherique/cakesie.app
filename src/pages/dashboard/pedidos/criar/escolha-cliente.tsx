@@ -1,18 +1,15 @@
+import { trpc } from "@/utils/trpc";
 import { Title } from "./title";
 import { StepProps } from "./types";
 
 const EscolhaClienteStep: React.FC<StepProps> = ({ onNext, onPrev }) => {
+  const { data } = trpc.useQuery(["user.getAll"]);
+
   return (
     <div className="grid grid-rows-layout gap-4">
       <Title step={1} />
       <div>
         <h1 className="font-bold text-xl">Dados do pedido:</h1>
-        <p>
-          <span className="font-bold">Nome: </span>Matheus Henrique dos Santods
-        </p>
-        <p>
-          <span className="font-bold">Telefone: </span>(12) 997713951
-        </p>
       </div>
       <div className="w-full flex gap-2 my-6">
         <input
@@ -33,15 +30,17 @@ const EscolhaClienteStep: React.FC<StepProps> = ({ onNext, onPrev }) => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Matheus Henrique dos Santos</td>
-              <td>(12) 997713951</td>
-              <td>
-                <button className="px-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out">
-                  +
-                </button>
-              </td>
-            </tr>
+            {data?.map((user) => (
+              <tr key={user.id}>
+                <td>{user.name}</td>
+                <td>{user.email}</td>
+                <td>
+                  <button className="px-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out">
+                    +
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

@@ -1,3 +1,4 @@
+import { Role } from "@prisma/client";
 import { z } from "zod";
 import { compare, hash } from "../../utils/encrypter";
 import { createRouter } from "./context";
@@ -44,5 +45,12 @@ export const userRouter = createRouter()
       }
 
       return user;
+    },
+  })
+  .query("getAll", {
+    async resolve() {
+      return await prisma?.user.findMany({
+        where: { role: Role.CLIENT },
+      });
     },
   });

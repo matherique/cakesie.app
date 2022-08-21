@@ -28,6 +28,7 @@ const GetStep: React.FC<
       CurrentStep = EscolhaBoloStep;
       break;
   }
+
   return <CurrentStep onNext={onNext} onPrev={onPrev} />;
 };
 
