@@ -1,10 +1,19 @@
 import { Title } from "./title";
 import { StepProps } from "./types";
 
-const EscolhaClienteStep: React.FC<StepProps> = ({ onNext }) => {
+const EscolhaClienteStep: React.FC<StepProps> = ({ onNext, onPrev }) => {
   return (
-    <div className="grid grid-rows-layout">
+    <div className="grid grid-rows-layout gap-4">
       <Title step={1} />
+      <div>
+        <h1 className="font-bold text-xl">Dados do pedido:</h1>
+        <p>
+          <span className="font-bold">Nome: </span>Matheus Henrique dos Santods
+        </p>
+        <p>
+          <span className="font-bold">Telefone: </span>(12) 997713951
+        </p>
+      </div>
       <div className="w-full flex gap-2 my-6">
         <input
           className="w-full px-4 py-2 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-purple-600 focus:outline-none"
@@ -37,17 +46,10 @@ const EscolhaClienteStep: React.FC<StepProps> = ({ onNext }) => {
         </table>
       </div>
       <div className="w-full flex justify-between self-end">
-        <div>
-          <p>
-            <span className="font-bold">Nome: </span>Matheus Henrique dos
-            Santods
-          </p>
-          <p>
-            <span className="font-bold">Telefone: </span>(12) 997713951
-          </p>
-          <p>
-            <span className="font-bold">Telefone: </span>(12) 997713951
-          </p>
+        <div className="self-end"></div>
+        <div className="flex gap-1">
+          <h1 className="font-bold text-2xl">Total: </h1>
+          <span className="text-2xl"> R$ 1000,00</span>
         </div>
         <div className="self-end">
           <button

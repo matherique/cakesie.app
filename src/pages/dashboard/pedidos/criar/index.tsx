@@ -20,9 +20,14 @@ const GetStep: React.FC<
       break;
     case 2:
       CurrentStep = EscolhaBoloStep;
+    case 3:
+      CurrentStep = EscolhaBoloStep;
+    case 4:
+      CurrentStep = EscolhaBoloStep;
+    case 5:
+      CurrentStep = EscolhaBoloStep;
       break;
   }
-
   return <CurrentStep onNext={onNext} onPrev={onPrev} />;
 };
 
