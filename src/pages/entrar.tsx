@@ -4,20 +4,19 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import UnauthenticatedClient from "@/components/unauthenticated-client";
 import { trpc } from "@/utils/trpc";
-
-type LoginInput = {
-  email: string;
-  password: string;
-};
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema, LoginSchemaType } from "@/shared/validations/user";
+import { signIn } from "next-auth/react";
 
 const inputClass = `form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-purple-600 focus:outline-none`;
 
 export default function Login() {
-  const { register, handleSubmit } = useForm<LoginInput>();
-  const { mutate, isError } = trpc.useMutation(["user.login"]);
+  const { register, handleSubmit } = useForm<LoginSchemaType>({
+    resolver: zodResolver(loginSchema),
+  });
 
-  async function onSubmit({ email, password }: LoginInput) {
-    await mutate({ email, password });
+  async function onSubmit(data: LoginSchemaType) {
+    await signIn("credentials", { ...data, callbackUrl: "/dashboard" });
   }
 
   return (
@@ -62,11 +61,6 @@ export default function Login() {
             Esqueceu a senha?
           </a>
         </div>
-        {isError && (
-          <div className="flex justify-between items-center mb-3 p-1 text-red-700 font-bold">
-            <h1>Usuário ou senha inválidos</h1>
-          </div>
-        )}
 
         <button
           type="submit"

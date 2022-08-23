@@ -6,7 +6,7 @@ export const signupSchema = z.object({
   password: z.string(),
 });
 
-export type SinupScheumaType = z.infer<typeof signupSchema>;
+export type SignupSchemaType = z.infer<typeof signupSchema>;
 
 export const loginSchema = z.object({
   email: z.string(),

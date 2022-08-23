@@ -8,6 +8,7 @@ export const userRouter = createRouter()
   .mutation("create", {
     input: signupSchema,
     async resolve({ input }) {
+      console.log(input);
       const hashed = await hash(input.password);
 
       const user = await prisma?.user.create({

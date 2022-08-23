@@ -1,41 +1,27 @@
 import * as React from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import UnauthenticatedClient from "@/components/unauthenticated-client";
 import { trpc } from "@/utils/trpc";
-
-type CreateUser = {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
-
-const schema = yup.object({
-  name: yup.string().required("O nome é obrigatório"),
-  email: yup.string().required("O email é obrigatório"),
-  password: yup.string().required("A senha é obrigatória"),
-  confirmPassword: yup
-    .string()
-    .test("passwords-match", "Senhas não são iguais", function (value) {
-      return this.parent.password === value;
-    }),
-});
+import { signupSchema, SignupSchemaType } from "@/shared/validations/user";
 
 export default function CreateAccount() {
-  const { mutate } = trpc.useMutation("user.create");
+  const { mutate, isError } = trpc.useMutation("user.create");
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<CreateUser>({ resolver: yupResolver(schema) });
+  } = useForm<SignupSchemaType>({ resolver: zodResolver(signupSchema) });
 
-  function onSubmit(data: CreateUser) {
-    mutate({ email: data.email, name: data.name, password: data.password });
+  async function onSubmit(data: SignupSchemaType) {
+    await mutate({
+      email: data.email,
+      name: data.name,
+      password: data.password,
+    });
   }
 
   return (
@@ -69,7 +55,7 @@ export default function CreateAccount() {
 
         <div className="mb-6">
           <input
-            type="text"
+            type="password"
             className={`${
               errors?.password
                 ? "border-red-600 focus:border-red-600"
@@ -80,18 +66,11 @@ export default function CreateAccount() {
           />
         </div>
 
-        <div className="mb-6">
-          <input
-            type="text"
-            className={`${
-              errors?.confirmPassword
-                ? "border-red-600 focus:border-red-600"
-                : "border-gray-300 focus:border-purple-600 "
-            } form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:outline-none`}
-            placeholder="Confirmação da senha"
-            {...register("confirmPassword")}
-          />
-        </div>
+        {isError && (
+          <div className="flex justify-between items-center mb-3 p-1 text-red-700 font-bold">
+            <h1>Usuário ou senha inválidos</h1>
+          </div>
+        )}
 
         <button
           type="submit"
