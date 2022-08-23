@@ -21,11 +21,13 @@ model Cake {
 }
 
 model User {
-    id       String @id @default(cuid())
-    name     String
-    email    String @unique
-    password String
-    role     Role   @default(CLIENT)
+    id        String   @id @default(cuid())
+    name      String
+    email     String   @unique
+    password  String
+    role      Role     @default(CLIENT)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
 enum Role {

@@ -1,15 +1,12 @@
+import { loginSchema, signupSchema } from "@/shared/validations/user";
 import { Role } from "@prisma/client";
-import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 import { compare, hash } from "../../utils/encrypter";
 import { createRouter } from "./context";
 
 export const userRouter = createRouter()
   .mutation("create", {
-    input: z.object({
-      name: z.string(),
-      email: z.string(),
-      password: z.string(),
-    }),
+    input: signupSchema,
     async resolve({ input }) {
       const hashed = await hash(input.password);
 
@@ -27,21 +24,24 @@ export const userRouter = createRouter()
     },
   })
   .mutation("login", {
-    input: z.object({
-      email: z.string(),
-      password: z.string(),
-    }),
+    input: loginSchema,
     async resolve({ input }) {
-      const user = await prisma?.user.findFirstOrThrow({
+      const user = await prisma?.user.findFirst({
         where: { email: input.email },
       });
 
       if (!user) {
-        throw new Error("invalid email or password");
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "user not found",
+        });
       }
 
       if (!compare(user.password, input.password)) {
-        throw new Error("ivalid email or password");
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "invalid email or password",
+        });
       }
 
       return user;

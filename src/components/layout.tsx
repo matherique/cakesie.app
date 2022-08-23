@@ -24,7 +24,7 @@ function CartIcon({ hasItens }: { hasItens: boolean }) {
 
 function Menu() {
   return (
-    <nav className="relative w-full flex flex-wrap items-center justify-between py-4 bg-gray-100 text-gray-500 hover:text-gray-700 focus:text-gray-700">
+    <nav className="relative w-full flex flex-wrap items-center justify-between py-4 text-gray-500 hover:text-gray-700 focus:text-gray-700">
       <div className="container-fluid w-full flex flex-wrap items-center justify-between">
         <div className="container-fluid basis-1/2">
           <Link href="/">
@@ -60,7 +60,7 @@ export default function Layout({ children, breadcrumb }: Props) {
     <section className="">
       <div className="mx-auto w-8/12">
         <Menu />
-        <nav className="bg-grey-light rounded-md w-full">
+        <nav className="rounded-md w-full">
           <ol className="list-reset flex">
             {breadcrumb &&
               breadcrumb.map((item, index) => {
