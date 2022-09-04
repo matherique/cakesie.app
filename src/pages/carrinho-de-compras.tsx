@@ -20,7 +20,7 @@ const Quantidade: React.FC<{ set: (value: number) => void }> = ({ set }) => {
     set(quantity)
   }, [quantity, set])
 
-  const buttonStyle = "w-8 bg-purple-500"
+  const buttonStyle = "w-8 bg-purple-500 rounded text-white"
 
   return <div className="flex gap-2">
     <button className={buttonStyle} onClick={add} >+</button>
@@ -33,7 +33,7 @@ const CarrinhoCompras: NextPage = () => {
   const gambiarra = Array.from({ length: 2 }, (_, x) => x + 1);
 
   return <Layout>
-    <h1 className="text-2xl font-bold text-purple-600">Carrinho de compras</h1>
+    <h1 className="text-4xl text-center font-bold text-purple-600 py-5">Carrinho de compras</h1>
     <div className="w-full">
       {gambiarra.map(x =>
         <div className="w-full grid grid-cols-[200px,1fr,200px] my-3" key={x}>
@@ -57,13 +57,26 @@ const CarrinhoCompras: NextPage = () => {
           </div>
         </div>
       )}
-      <div className="grid grid-cols-[1fr,200px] border-2 border-purple-300">
+      <div className="grid grid-cols-[1fr,1fr,200px] mt-10">
+        <div className="p-5 text-right text-2xl font-bold flex gap-5">
+          <div className="flex items-center gap-1">
+            <input id="retirada" type="radio" value="" name="default-radio" className="w-5 h-5" />
+            <label htmlFor="retirada" className="text-lg">Retirada</label>
+          </div>
+          <div className="flex items-center gap-1">
+            <input id="entrega" type="radio" value="" name="default-radio" className="w-5 h-5" />
+            <label htmlFor="entrega" className="text-lg">Entrega</label>
+          </div>
+        </div>
         <div className="p-5 text-right text-2xl font-bold">
           Total:
         </div>
         <div className="p-5 text-right text-2xl font-bold">
           R$ 200,00
         </div>
+      </div>
+      <div className="">
+        <button className="w-full bg-purple-500 text-white p-3 text-2xl font-bold">Finalizar compra</button>
       </div>
     </div >
   </Layout >
