@@ -76,7 +76,7 @@ const CarrinhoCompras: NextPage = () => {
         </div>
       </div>
       <div className="">
-        <button className="w-full bg-purple-500 text-white p-3 text-2xl font-bold">Finalizar compra</button>
+        <button className="w-full bg-purple-500 text-white p-3 text-2xl font-bold">Proximo</button>
       </div>
     </div >
   </Layout >
