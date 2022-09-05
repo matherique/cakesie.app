@@ -9,21 +9,22 @@ import { Cake } from "@prisma/client";
 const CakeCard: React.FC<{ cake: Cake }> = ({ cake }) => {
   return (
     <div className="basis-1/2 shadow-md p-2">
-      <div className="flex">
-        <div className="w-13">
-          {/* TODO: verificar como arrumar o tamanho da imagem, talvez olhar video do theo */}
-          <Image src={Bolo} alt="logo" objectFit="contain" />
+      <div className="grid grid-cols-[200px,1fr]">
+        <div>
+          <Image src={Bolo} alt="logo" layout="intrinsic" objectFit="cover" />
         </div>
         <div className="flex flex-col justify-start pr-2 pl-2">
           <h5 className="text-gray-900 text-xl font-medium pb-2">
             {cake.name}
           </h5>
           <p className="text-gray-700 text-base">{cake.description}</p>
-          <Link href={`/bolo/${cake.id}`}>
-            <a className="place-self-end inline-block px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out">
-              Detalhes
-            </a>
-          </Link>
+          <div className="h-full self-end justify-end flex">
+            <Link href={`/bolo/${cake.id}`}>
+              <a className="place-self-end inline-block px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out">
+                Detalhes
+              </a>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
