@@ -3,7 +3,6 @@ import Link from "next/link";
 
 import { useForm } from "react-hook-form";
 import UnauthenticatedClient from "@/components/unauthenticated-client";
-import { trpc } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, LoginSchemaType } from "@/shared/validations/user";
 import { signIn } from "next-auth/react";
@@ -15,9 +14,9 @@ export default function Login() {
     resolver: zodResolver(loginSchema),
   });
 
-  async function onSubmit(data: LoginSchemaType) {
-    await signIn("credentials", { ...data, callbackUrl: "/dashboard" });
-  }
+  const onSubmit = React.useCallback(async (data: LoginSchemaType) => {
+    await signIn("credentials", { ...data, callbackUrl: "/" });
+  }, [])
 
   return (
     <UnauthenticatedClient>
