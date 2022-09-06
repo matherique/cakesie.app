@@ -1,11 +1,33 @@
-import type { GetStaticProps } from "next";
-import Image from "next/image";
 import { useRouter } from "next/router";
+import Image from "next/image";
 import * as React from "react";
 import Layout from "@/components/layout";
 import Bolo from "@/public/bolo.jpeg";
+import { trpc } from "@/utils/trpc";
+import { useSession } from "next-auth/react";
 
 const CakeDetails: React.FC = (props) => {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const id = router.query.id as string
+
+  const { data, isLoading } = trpc.useQuery(["cake.getById", { id }]);
+  const { mutate, error } = trpc.useMutation(["shopping-cart.addItem"]);
+
+  const add = React.useCallback(async () => {
+    if (!session) return;
+    mutate({ cakeId: id, userId: session.id })
+  }, [id, mutate, session])
+
+  if (isLoading) {
+    return <div>loading</div>;
+  }
+
+  if (!data) {
+    router.push("/")
+    return null
+  }
+
   return (
     <Layout
       breadcrumb={[
@@ -14,7 +36,7 @@ const CakeDetails: React.FC = (props) => {
       ]}
     >
       <h1 className="font-medium leading-tight text-3xl mt-5 mb-2 text-purple-800">
-        Bolo de chocolate
+        {data.name}
       </h1>
       <div className="container">
         <div className="flex gap-7">
@@ -31,28 +53,14 @@ const CakeDetails: React.FC = (props) => {
           <div className="basis-3/5">
             <div className="flex flex-col h-full justify-between">
               <div className="box-border">
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Illum
-                fugit voluptatum commodi repellendus architecto labore quam quos
-                iure non ea. Voluptatem unde similique vitae, in aperiam eaque
-                veniam explicabo mollitia. Lorem ipsum dolor sit amet
-                consectetur adipisicing elit. Itaque velit consectetur sit
-                expedita provident, dolor, quos eius, beatae sequi optio sunt
-                amet nulla reiciendis fugit error! Dolorum sunt tempora
-                veritatis.
-                <br />
-                <br />
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Illum
-                fugit voluptatum commodi repellendus architecto labore quam quos
-                iure non ea. Voluptatem unde similique vitae, in aperiam eaque
-                veniam explicabo mollitia. Lorem ipsum dolor sit amet
-                consectetur adipisicing elit. Itaque velit consectetur sit
-                expedita provident, dolor, quos eius, beatae sequi optio sunt
-                amet nulla reiciendis fugit error! Dolorum sunt tempora
-                veritatis.
+                {data.description}
               </div>
               <div className="self-end flex justify-between w-full">
-                <h1 className="font-medium text-4xl">R$ 100,00</h1>
-                <button className="inline-block px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out">
+                <h1 className="font-medium text-4xl">R$ {data.price},00</h1>
+                <button
+                  onClick={add}
+                  className="inline-block px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out"
+                >
                   Comprar
                 </button>
               </div>
@@ -88,6 +96,5 @@ const CakeDetails: React.FC = (props) => {
     </Layout>
   );
 }
-
 
 export default CakeDetails
