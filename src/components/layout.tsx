@@ -3,7 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaCartPlus, FaShoppingCart } from "react-icons/fa";
 import Logo from "@/public/logo.png";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+import { trpc } from "@/utils/trpc";
 
 type BreadcrumbItem = {
   href: string;
@@ -26,6 +27,8 @@ function CartIcon({ hasItens }: { hasItens: boolean }) {
 function Menu() {
   const { data: session } = useSession()
 
+  const { data } = trpc.useQuery(["shopping-cart.hasItens"])
+
   return (
     <nav className="relative w-full flex flex-wrap items-center justify-between py-4 text-gray-500 hover:text-gray-700 focus:text-gray-700">
       <div className="container-fluid w-full flex flex-wrap items-center justify-between">
@@ -37,11 +40,24 @@ function Menu() {
           </Link>
         </div>
         <div className="container-fluid flex items-center gap-x-5">
-          {session ? <div>
-            <a
-              href="/perfil"
-              className="text-xl text-purple-500 cursor-pointer"
-            >{session.user.name}</a>
+          {session ? <div className="flex gap-5">
+            <div className="flex flex-col">
+              <a
+                href="/perfil"
+                className="text-xl text-purple-500 cursor-pointer"
+              >{session.user.name}</a>
+              <small
+                onClick={() => signOut()}
+                className="self-end text-sm text-purple-500 cursor-pointer hover:underline"
+              >
+                Sair
+              </small>
+            </div>
+            <Link href="/carrinho-de-compras">
+              <a>
+                <CartIcon hasItens={data ?? false} />
+              </a>
+            </Link>
           </div> : (<>
             <Link href="/criar-conta">
               <a className="text-purple-600 hover:text-purple-700 transition duration-300 ease-in-out">
@@ -51,11 +67,6 @@ function Menu() {
             <Link href="/entrar">
               <a className="inline-block px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out">
                 Entrar
-              </a>
-            </Link>
-            <Link href="/carrinho-de-compras">
-              <a>
-                <CartIcon hasItens={false} />
               </a>
             </Link>
           </>)}

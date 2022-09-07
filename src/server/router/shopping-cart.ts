@@ -1,10 +1,9 @@
-import { addItemInput, getItemInput } from "@/shared/validations/shopping-cart";
+import { addItemInput, getItemInput, hasItensInput } from "@/shared/validations/shopping-cart";
 import { createRouter } from "./context";
 
 export const shoppingCartRouter = createRouter().mutation("addItem", {
   input: addItemInput,
-  async resolve({ input, ctx }) {
-    console.log(prisma?.shoppingCart)
+  async resolve({ input }) {
     await prisma?.shoppingCart.create({
       data: {
         productId: input.cakeId,
@@ -12,11 +11,32 @@ export const shoppingCartRouter = createRouter().mutation("addItem", {
       }
     })
   },
-}).query("getItems", {
-  input: getItemInput,
-  async resolve({ input, ctx }) {
+}).query("getItens", {
+  async resolve({ ctx }) {
+    const { session } = ctx
+    if (!session) {
+      return []
+    }
+
     return await prisma?.shoppingCart.findMany({
-      where: { userId: input.userId }
+      where: { userId: session.id },
+      include: { product: true, user: true }
     })
+  }
+}).query("hasItens", {
+  async resolve({ ctx }) {
+    const { session } = ctx
+    if (!session) {
+      return false
+    }
+    const resp = await prisma?.shoppingCart.findMany({
+      where: { userId: session.id }
+    })
+
+    if (!resp) {
+      return false
+    }
+
+    return resp.length > 0
   }
 })

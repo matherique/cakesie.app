@@ -3,6 +3,8 @@ import { NextPage } from "next";
 import Bolo from "@/public/bolo.jpeg";
 import Image from "next/image"
 import React, { SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
+import { useSession } from "next-auth/react";
+import { trpc } from "@/utils/trpc";
 
 const Quantidade: React.FC<{ set: (value: number) => void }> = ({ set }) => {
   const [quantity, setQuantity] = useState(1)
@@ -30,13 +32,27 @@ const Quantidade: React.FC<{ set: (value: number) => void }> = ({ set }) => {
 }
 
 const CarrinhoCompras: NextPage = () => {
-  const gambiarra = Array.from({ length: 2 }, (_, x) => x + 1);
+  const { data: session } = useSession()
+
+  const userId = session?.id || ""
+
+  const { data } = trpc.useQuery(["shopping-cart.getItens"])
+
+  const itens = useMemo(() => {
+    return data || []
+  }, [data])
+
+  const total = useMemo(() => {
+    return itens.reduce((acc, item) => {
+      return acc + (item.product.price * item.quantity)
+    }, 0)
+  }, [itens])
 
   return <Layout>
     <h1 className="text-4xl text-center font-bold text-purple-600 py-5">Carrinho de compras</h1>
     <div className="w-full">
-      {gambiarra.map(x =>
-        <div className="w-full grid grid-cols-[200px,1fr,200px] my-3" key={x}>
+      {itens.map(item =>
+        <div className="w-full grid grid-cols-[200px,1fr,200px] my-3" key={item.id}>
           <div className="">
             <Image
               src={Bolo}
@@ -45,7 +61,7 @@ const CarrinhoCompras: NextPage = () => {
             />
           </div>
           <div className="flex flex-row justify-between p-5">
-            <h3 className="text-2xl font-bold self-center">Bolo de Chocolate</h3>
+            <h3 className="text-2xl font-bold self-center">{item.product.name}</h3>
             <div className="self-end flex flex-col text-right gap-1 px-10">
               <Quantidade set={console.log} />
               <a className="self-center hover:underline cursor-pointer">Remover</a>
@@ -53,7 +69,7 @@ const CarrinhoCompras: NextPage = () => {
 
           </div>
           <div className="text-2xl font-bold items-center justify-end flex p-5 ">
-            <p>R$ 1000,00</p>
+            <p>R$ {item.product.price * item.quantity},00</p>
           </div>
         </div>
       )}
@@ -72,7 +88,7 @@ const CarrinhoCompras: NextPage = () => {
           Total:
         </div>
         <div className="p-5 text-right text-2xl font-bold">
-          R$ 200,00
+          R$ {total},00
         </div>
       </div>
       <div className="">

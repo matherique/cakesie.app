@@ -8,3 +8,7 @@ export const addItemInput = z.object({
 export const getItemInput = z.object({
   userId: z.string(),
 })
+
+export const hasItensInput = z.object({
+  userId: z.string(),
+})
