@@ -1,13 +1,22 @@
 import { addItemInput, getItemInput, hasItensInput } from "@/shared/validations/shopping-cart";
+import { TRPCError } from "@trpc/server";
 import { createRouter } from "./context";
 
 export const shoppingCartRouter = createRouter().mutation("addItem", {
   input: addItemInput,
-  async resolve({ input }) {
+  async resolve({ input, ctx }) {
+    const { session } = ctx
+    if (!session) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "you must be logged in",
+      });
+    }
+
     await prisma?.shoppingCart.create({
       data: {
         productId: input.cakeId,
-        userId: input.userId,
+        userId: session.id,
       }
     })
   },

@@ -4,20 +4,35 @@ import * as React from "react";
 import Layout from "@/components/layout";
 import Bolo from "@/public/bolo.jpeg";
 import { trpc } from "@/utils/trpc";
-import { useSession } from "next-auth/react";
+import { useEffect } from "react";
+import useAlert from "@/hooks/useAlerts";
+import useAuth from "@/hooks/useAuth";
 
 const CakeDetails: React.FC = (props) => {
-  const { data: session } = useSession();
+  const { isLoggedIn } = useAuth()
   const router = useRouter();
   const id = router.query.id as string
 
   const { data, isLoading } = trpc.useQuery(["cake.getById", { id }]);
-  const { mutate, error } = trpc.useMutation(["shopping-cart.addItem"]);
+  const { mutateAsync, isError, error } = trpc.useMutation(["shopping-cart.addItem"]);
+  const { warning, error: errorAlert } = useAlert()
 
   const add = React.useCallback(async () => {
-    if (!session) return;
-    mutate({ cakeId: id, userId: session.id })
-  }, [id, mutate, session])
+    if (!isLoggedIn) {
+      warning("Você precisa estar logado para adicionar um item ao carrinho")
+      return
+    }
+
+    await mutateAsync({ cakeId: id })
+  }, [id, mutateAsync, isLoggedIn, warning])
+
+  useEffect(() => {
+    if (!isError) return;
+
+    errorAlert(error.message)
+
+  }, [isError, error, errorAlert])
+
 
   if (isLoading) {
     return <div>loading</div>;
@@ -61,7 +76,7 @@ const CakeDetails: React.FC = (props) => {
                   onClick={add}
                   className="inline-block px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out"
                 >
-                  Comprar
+                  Adicionar ao Carrinho
                 </button>
               </div>
             </div>
