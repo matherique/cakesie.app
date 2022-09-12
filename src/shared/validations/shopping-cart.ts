@@ -4,10 +4,11 @@ export const addItemInput = z.object({
   cakeId: z.string(),
 });
 
-export const getItemInput = z.object({
+export const hasItensInput = z.object({
   userId: z.string(),
 })
 
-export const hasItensInput = z.object({
-  userId: z.string(),
+export const updateQuantity = z.object({
+  id: z.string(),
+  quantity: z.number(),
 })

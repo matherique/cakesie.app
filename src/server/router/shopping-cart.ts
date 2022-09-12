@@ -1,4 +1,4 @@
-import { addItemInput, getItemInput, hasItensInput } from "@/shared/validations/shopping-cart";
+import { addItemInput, hasItensInput, updateQuantity } from "@/shared/validations/shopping-cart";
 import { TRPCError } from "@trpc/server";
 import { createRouter } from "./context";
 
@@ -47,5 +47,36 @@ export const shoppingCartRouter = createRouter().mutation("addItem", {
     }
 
     return resp.length > 0
+  }
+}).mutation("updateQuantity", {
+  input: updateQuantity,
+  async resolve({ input, ctx }) {
+    const { session } = ctx
+    if (!session) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "you must be logged in",
+      });
+    }
+
+    const item = await prisma?.shoppingCart.findFirst({
+      where: { id: input.id },
+    })
+
+    if (!item) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "item not found",
+      });
+    }
+
+    const quantity = !!~(item.quantity + input.quantity) ? item.quantity + input.quantity : 0
+
+    if (quantity === 0) {
+      await prisma?.shoppingCart.delete({ where: { id: input.id } })
+      return
+    }
+
+    await prisma?.shoppingCart.update({ data: { quantity }, where: { id: input.id } })
   }
 })

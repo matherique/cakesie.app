@@ -2,56 +2,29 @@ import Layout from "@/components/layout";
 import { NextPage } from "next";
 import Bolo from "@/public/bolo.jpeg";
 import Image from "next/image"
-import React, { SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
+import React, { SetStateAction, useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { useSession } from "next-auth/react";
 import { trpc } from "@/utils/trpc";
 
-const Quantidade: React.FC<{ set: (value: number) => void }> = ({ set }) => {
-  const [quantity, setQuantity] = useState(1)
-
-  const add = useCallback(() => {
-    setQuantity(quantity + 1)
-  }, [quantity])
-
-  const sub = useCallback(() => {
-    if (quantity - 1 <= 0) return;
-    setQuantity(quantity - 1)
-  }, [quantity])
-
-  useEffect(() => {
-    set(quantity)
-  }, [quantity, set])
-
-  const buttonStyle = "w-8 bg-purple-500 rounded text-white"
-
-  return <div className="flex gap-2">
-    <button className={buttonStyle} onClick={add} >+</button>
-    <input className="w-8 text-center" readOnly defaultValue={quantity} />
-    <button className={buttonStyle} onClick={sub}>-</button>
-  </div>
-}
-
 const CarrinhoCompras: NextPage = () => {
-  const { data: session } = useSession()
-
-  const userId = session?.id || ""
-
-  const { data } = trpc.useQuery(["shopping-cart.getItens"])
-
-  const itens = useMemo(() => {
-    return data || []
-  }, [data])
+  const { data, refetch } = trpc.useQuery(["shopping-cart.getItens"])
+  const { mutateAsync } = trpc.useMutation(["shopping-cart.updateQuantity"])
 
   const total = useMemo(() => {
-    return itens.reduce((acc, item) => {
+    return data?.reduce((acc, item) => {
       return acc + (item.product.price * item.quantity)
     }, 0)
-  }, [itens])
+  }, [data])
+
+  const updateQuantity = useCallback(async (id: string, quantity: number) => {
+    await mutateAsync({ id, quantity })
+    await refetch()
+  }, [mutateAsync, refetch])
 
   return <Layout>
     <h1 className="text-4xl text-center font-bold text-purple-600 py-5">Carrinho de compras</h1>
     <div className="w-full">
-      {itens.map(item =>
+      {(data || []).map(item =>
         <div className="w-full grid grid-cols-[200px,1fr,200px] my-3" key={item.id}>
           <div className="">
             <Image
@@ -63,7 +36,11 @@ const CarrinhoCompras: NextPage = () => {
           <div className="flex flex-row justify-between p-5">
             <h3 className="text-2xl font-bold self-center">{item.product.name}</h3>
             <div className="self-end flex flex-col text-right gap-1 px-10">
-              <Quantidade set={console.log} />
+              <div className="flex gap-2">
+                <button className="w-8 bg-purple-500 rounded text-white" onClick={() => updateQuantity(item.id, 1)} >+</button>
+                <input className="w-8 text-center" readOnly value={item.quantity} />
+                <button className="w-8 bg-purple-500 rounded text-white" onClick={() => updateQuantity(item.id, -1)}>-</button>
+              </div>
               <a className="self-center hover:underline cursor-pointer">Remover</a>
             </div>
 
