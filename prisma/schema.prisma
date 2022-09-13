@@ -33,12 +33,13 @@ model User {
 }
 
 model ShoppingCart {
-    id        String @id @default(cuid())
-    user      User   @relation(fields: [userId], references: [id])
-    userId    String
-    product   Cake   @relation(fields: [productId], references: [id])
-    productId String
-    quantity  Int    @default(1)
+    id           String  @id @default(cuid())
+    user         User    @relation(fields: [userId], references: [id])
+    userId       String
+    observations String?
+    product      Cake    @relation(fields: [productId], references: [id])
+    productId    String
+    quantity     Int     @default(1)
 }
 
 enum Role {

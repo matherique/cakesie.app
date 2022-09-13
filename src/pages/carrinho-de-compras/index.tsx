@@ -2,8 +2,7 @@ import Layout from "@/components/layout";
 import { NextPage } from "next";
 import Bolo from "@/public/bolo.jpeg";
 import Image from "next/image"
-import React, { SetStateAction, useCallback, useEffect, useMemo, useReducer, useState } from "react";
-import { useSession } from "next-auth/react";
+import React, { useCallback, useMemo } from "react";
 import { trpc } from "@/utils/trpc";
 
 const CarrinhoCompras: NextPage = () => {
@@ -25,7 +24,7 @@ const CarrinhoCompras: NextPage = () => {
     <h1 className="text-4xl text-center font-bold text-purple-600 py-5">Carrinho de compras</h1>
     <div className="w-full">
       {(data || []).map(item =>
-        <div className="w-full grid grid-cols-[200px,1fr,200px] my-3" key={item.id}>
+        <div className="w-full grid grid-cols-[300px,1fr,200px] my-3" key={item.id}>
           <div className="">
             <Image
               src={Bolo}
@@ -33,9 +32,13 @@ const CarrinhoCompras: NextPage = () => {
               layout="responsive"
             />
           </div>
-          <div className="flex flex-row justify-between p-5">
-            <h3 className="text-2xl font-bold self-center">{item.product.name}</h3>
-            <div className="self-end flex flex-col text-right gap-1 px-10">
+          <div className="flex flex-col px-2">
+            <h3 className="text-2xl font-bold">{item.product.name}</h3>
+            <textarea className="h-full p-2 border border-solid" placeholder="Obervação sobre o pedido"></textarea>
+          </div>
+          <div className="items-center flex flex-col p-5 gap-5">
+            <p className="text-2xl font-bold">R$ {item.product.price * item.quantity},00</p>
+            <div className="text-center">
               <div className="flex gap-2">
                 <button className="w-8 bg-purple-500 rounded text-white" onClick={() => updateQuantity(item.id, 1)} >+</button>
                 <input className="w-8 text-center" readOnly value={item.quantity} />
@@ -43,10 +46,6 @@ const CarrinhoCompras: NextPage = () => {
               </div>
               <a className="self-center hover:underline cursor-pointer">Remover</a>
             </div>
-
-          </div>
-          <div className="text-2xl font-bold items-center justify-end flex p-5 ">
-            <p>R$ {item.product.price * item.quantity},00</p>
           </div>
         </div>
       )}
