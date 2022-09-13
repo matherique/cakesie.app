@@ -34,7 +34,7 @@ const CarrinhoCompras: NextPage = () => {
           </div>
           <div className="flex flex-col px-2">
             <h3 className="text-2xl font-bold">{item.product.name}</h3>
-            <textarea className="h-full p-2 border border-solid" placeholder="Obervação sobre o pedido"></textarea>
+            <p className="w-full h-full text-md text-gray-400">{item.product.description}</p>
           </div>
           <div className="items-center flex flex-col p-5 gap-5">
             <p className="text-2xl font-bold">R$ {item.product.price * item.quantity},00</p>
