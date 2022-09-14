@@ -12,3 +12,7 @@ export const updateQuantity = z.object({
   id: z.string(),
   quantity: z.number(),
 })
+
+export const removeInput = z.object({
+  id: z.string(),
+})
