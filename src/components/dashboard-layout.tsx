@@ -1,7 +1,7 @@
-import { NextPage } from "next";
 import Image from "next/image";
 import Logo from "@/public/logo.png";
-import { FaClipboardList } from "react-icons/fa";
+import { FaBirthdayCake, FaClipboardList } from "react-icons/fa";
+import Link from "next/link";
 
 function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -12,6 +12,18 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
             <Image src={Logo} alt="logo" width={200} height={100} />
           </a>
           <ul className="space-y-2">
+            <li>
+              <Link href="/dashboard/bolos/cadastrar" >
+                <a
+                  className="group flex items-center p-2 text-base font-normal text-purple-900 rounded-lg dark:text-white hover:bg-purple-100 dark:hover:bg-purple-300 hover:text-white"
+                >
+                  <FaBirthdayCake size={26} color="#9333ea" />
+                  <span className="flex-1 ml-3 whitespace-nowrap text-purple-800 group-hover:text-white">
+                    Bolos
+                  </span>
+                </a>
+              </Link>
+            </li>
             <li>
               <a
                 href="#"

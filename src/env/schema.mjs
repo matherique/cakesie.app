@@ -7,7 +7,8 @@ import { z } from "zod";
  */
 export const serverSchema = z.object({
   DATABASE_URL: z.string().url(),
-  NODE_ENV: z.enum(["development", "test", "production"]),
+  ACCESS_KEY_ID: z.string(),
+  SECRET_ACCESS_KEY: z.string(),
 });
 
 /**
@@ -28,3 +29,4 @@ export const clientSchema = z.object({
 export const clientEnv = {
   // NEXT_PUBLIC_BAR: process.env.NEXT_PUBLIC_BAR,
 };
+

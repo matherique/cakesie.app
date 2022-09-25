@@ -16,7 +16,7 @@ const Home: NextPage = () => {
     formState: { errors },
   } = useForm<LoginInput>();
 
-  function onSubmit(data: LoginInput) {}
+  function onSubmit(data: LoginInput) { }
 
   return (
     <section className="h-screen">

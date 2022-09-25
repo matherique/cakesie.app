@@ -19,6 +19,13 @@ model Cake {
     description  String
     status       Boolean        @default(true)
     ShoppingCart ShoppingCart[]
+    Photos       Photos[]
+}
+
+model Photos {
+    id     String @id @default(cuid())
+    cakeId String
+    cake   Cake   @relation(fields: [cakeId], references: [id])
 }
 
 model User {
