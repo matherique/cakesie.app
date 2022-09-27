@@ -1,11 +1,9 @@
 import DashboardLayout from "@/components/dashboard-layout";
 import { CreateCakeSchemaType } from "@/shared/validations/cake";
 import { trpc } from "@/utils/trpc";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { BADFLAGS } from "dns";
 import { NextPage } from "next";
-import Image from "next/image";
-import { useCallback, useEffect } from "react";
+import { useRouter } from "next/router";
+import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 
 type AddCake = CreateCakeSchemaType & {
@@ -13,15 +11,19 @@ type AddCake = CreateCakeSchemaType & {
 }
 
 const CadastrarBolo: NextPage = () => {
+  const router = useRouter();
+  const id = router.query.id as string
+
   const {
     register,
     handleSubmit,
+    reset,
     formState: {
       errors
     },
   } = useForm<AddCake>()
 
-  const { mutateAsync: createCake, isSuccess, data } = trpc.useMutation(["cake.create"])
+  const { mutateAsync: createCake, data } = trpc.useMutation(["cake.create"])
 
   const onSubmit = useCallback(async (data: AddCake) => {
     const bfs: ArrayBuffer[] = [];
@@ -37,7 +39,8 @@ const CadastrarBolo: NextPage = () => {
       photos_length: data.image.length,
       files: bfs.map<string>(buff => Buffer.from(buff).toString("base64"))
     })
-  }, [createCake])
+    reset()
+  }, [createCake, reset])
 
   const inputStyle = useCallback((hasError: boolean) => {
     let style = `block w-full p-2 text-md font-normal text-gray-700 bg-white bg-clip-padding border border-solid rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-purple-600 focus:outline-none`
@@ -102,11 +105,8 @@ const CadastrarBolo: NextPage = () => {
           </div>
         </div>
       </form>
-      <div className="w-1/2">
-        <h3 className="text-xl text-center">Photos</h3>
-      </div>
     </div>
-  </DashboardLayout>
+  </DashboardLayout >
 }
 
 export default CadastrarBolo

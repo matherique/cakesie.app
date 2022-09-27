@@ -1,4 +1,5 @@
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const BUCKET_NAME = "cakesie-app"
 const REGION = "sa-east-1"
@@ -16,8 +17,16 @@ export async function upload(filename: string, bytes: Buffer,) {
     Bucket: BUCKET_NAME,
     Key: filename,
     Body: bytes,
-    ContentType: "image/png",
   });
 
   return client.send(cmd)
+}
+
+export async function get(filename: string) {
+  const cmd = new GetObjectCommand({
+    Bucket: BUCKET_NAME,
+    Key: filename,
+  });
+
+  return getSignedUrl(client, cmd, { expiresIn: 60 * 60 })
 }

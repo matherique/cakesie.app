@@ -18,8 +18,8 @@ model Cake {
     price        Float
     description  String
     status       Boolean        @default(true)
-    ShoppingCart ShoppingCart[]
-    Photos       Photos[]
+    shoppingCart ShoppingCart[]
+    photos       Photos[]
 }
 
 model Photos {

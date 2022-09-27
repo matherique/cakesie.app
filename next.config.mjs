@@ -15,5 +15,8 @@ function defineNextConfig(config) {
 export default defineNextConfig({
   reactStrictMode: true,
   swcMinify: true,
-  env
+  env,
+  images: {
+    domains: ["cakesie-app.s3.sa-east-1.amazonaws.com"],
+  }
 });
