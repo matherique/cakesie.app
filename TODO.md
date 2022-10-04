@@ -1,0 +1,51 @@
+# MVP
+
+- [ ] Gerenciar Bolo 
+  - [x] Cadastrar 
+    - [x] Adicionar fotos
+      - [x] Fazer upload na S3
+      - [x] Criar url para visualizar a imagem
+      - [ ] ? Cortar imagem 
+    - [ ] Adicionar foto principal
+  - [ ] Editar 
+    - [ ] Remover fotos 
+      - [ ] Deletar do bucket
+    - [ ] Adicionar mais fotos
+    - [ ] Editar informações
+  - [ ] Desativar 
+  - [ ] Listar 
+  - [ ] Buscar  
+- [ ] Gerenciar Usuário
+  - [ ] Cadastrar 
+  - [ ] Editar 
+  - [ ] Busar
+  - [ ] Listar
+  - [ ] Login
+  - [ ] Logout
+- [ ] Gerenciar Pedido
+  - [ ] Criar um pedido
+    - [ ] Step 1: Escolher ou cadastrar um novo cliente
+    - [ ] Step 2: Escolher um bolo 
+    - [ ] Step 3: Selecionar se vai ser entrega ou retirada
+      - [ ] Salvar o horário da entrega ou retirada
+      - [ ] ? Cadastrar num Google Calendar ?
+  - [ ] Editar (alterar o status)
+  - [ ] Cancelar
+- [ ] Gerenciar Clientes
+  - [ ] Cadastrar
+  - [ ] Editar
+  - [ ] Listar
+  - [ ] Gerenciar Endereços
+    - [ ] Cadastrar
+    - [ ] Listar
+    - [ ] Editar
+    - [ ] Remover
+    - [ ] Setar como principal
+- [ ] Gerenciar estoque
+  - [ ] Adicionar Quantidade
+  - [ ] Remover Quantidade 
+  - [ ] Listar items
+  - [ ] Notificar quantidade baixa
+
+      
+    
