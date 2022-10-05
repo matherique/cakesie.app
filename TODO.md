@@ -13,7 +13,7 @@
     - [ ] Adicionar mais fotos
     - [ ] Editar informações
   - [ ] Desativar 
-  - [ ] Listar 
+  - [x] Listar 
   - [ ] Buscar  
 - [ ] Gerenciar Usuário
   - [ ] Cadastrar 
