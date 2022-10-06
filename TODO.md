@@ -12,7 +12,7 @@
       - [ ] Deletar do bucket
     - [ ] Adicionar mais fotos
     - [ ] Editar informações
-  - [ ] Desativar 
+  - [x] Desativar 
   - [x] Listar 
   - [ ] Buscar  
 - [ ] Gerenciar Usuário
