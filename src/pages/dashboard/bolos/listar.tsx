@@ -1,4 +1,5 @@
 import DashboardLayout from "@/components/dashboard-layout";
+import useAlert from "@/hooks/useAlerts";
 import { trpc } from "@/utils/trpc";
 import { NextPage } from "next";
 import Link from "next/link";
@@ -6,11 +7,19 @@ import { useCallback } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
 const ListarBolos: NextPage = () => {
-  const { data, isLoading } = trpc.useQuery(["cake.getAll"]);
+  const { data, isLoading, refetch } = trpc.useQuery(["cake.getAll"]);
+  const { mutate: disable } = trpc.useMutation("cake.disable");
+  const { success } = useAlert()
 
-  const handleDeleteCake = useCallback((id: string) => {
-    console.log("not implemented yet", id);
-  }, [])
+  const handleDeleteCake = async (id: string) => {
+    disable({ id }, {
+      onSuccess: () => {
+        success("Bolo deletado com sucesso")
+        refetch()
+      }
+    })
+
+  }
 
 
   return <DashboardLayout>
@@ -32,7 +41,7 @@ const ListarBolos: NextPage = () => {
       <table className="w-full table-auto">
         <thead className="text-left">
           <tr>
-            <th>Nome</th>
+            <th className="w-">Nome</th>
             <th>Preço</th>
             <th>Descrição</th>
             <th>Status</th>
@@ -40,7 +49,7 @@ const ListarBolos: NextPage = () => {
           </tr>
         </thead>
         <tbody>
-          {data && data.length > 0 ? data.map(cake => (
+          {data?.map(cake => (
             <tr key={cake.id}>
               <td>{cake.name}</td>
               <td>R$ {cake.price}</td>
@@ -57,7 +66,7 @@ const ListarBolos: NextPage = () => {
                 </span>
               </td>
             </tr>
-          )) : <tr>Nenhum produto cadastrado</tr>}
+          ))}
         </tbody>
       </table>
     </div>
