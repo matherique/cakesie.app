@@ -1,7 +1,7 @@
-import { getByIdSchema, createSchema } from "@/shared/validations/cake";
+import { getByIdSchema, createSchema, removePhotoSchema } from "@/shared/validations/cake";
 import { TRPCError } from "@trpc/server";
 import { createRouter } from "./context";
-import { get, upload } from "@/utils/s3";
+import { get, remove, upload } from "@/utils/s3";
 
 export const cakeRouter = createRouter()
   .query("getAll", {
@@ -15,8 +15,8 @@ export const cakeRouter = createRouter()
 
       if (!cake) throw new Error("could not find cake")
 
-      const photos = await Promise.all(cake.photos.map((photo) => {
-        return get(`${cake.id}/${photo.id}.png`)
+      const photos = await Promise.all(cake.photos.map(async (photo) => {
+        return { id: photo.id, url: await get(`${cake.id}/${photo.id}.png`) }
       }))
 
       return { cake, photos: photos }
@@ -76,5 +76,16 @@ export const cakeRouter = createRouter()
       if (!cake) throw new Error("could not find cake")
 
       return await prisma?.cake.update({ where: { id }, data: { status: !cake.status } })
+    }
+  }).mutation("removePhoto", {
+    input: removePhotoSchema,
+    async resolve({ input: { cakeId, photoId } }) {
+      const cake = await prisma?.cake.findFirst({ where: { id: cakeId } })
+
+      if (!cake) throw new Error("could not find cake")
+
+      await remove(`${cake.id}/${photoId}.png`)
+
+      return await prisma?.photos.delete({ where: { id: photoId } })
     }
   })

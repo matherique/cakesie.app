@@ -6,6 +6,7 @@ import Image from "next/future/image";
 import { useRouter } from "next/router";
 import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { FaTrash } from "react-icons/fa";
 
 type AddCake = CreateCakeSchemaType & {
   image: FileList
@@ -24,7 +25,8 @@ const EditarBolo: NextPage = () => {
     setValue,
   } = useForm<AddCake>()
 
-  const { data, isSuccess } = trpc.useQuery(["cake.getById", { id }])
+  const { data, isSuccess, refetch } = trpc.useQuery(["cake.getById", { id }])
+  const { mutate: removePhoto } = trpc.useMutation("cake.removePhoto")
 
   useEffect(() => {
     if (!isSuccess) return
@@ -51,6 +53,10 @@ const EditarBolo: NextPage = () => {
   //   reset()
   // }, [createCake, reset])
 
+  const handleRemovePhoto = useCallback(async (photoId: string) => {
+    removePhoto({ cakeId: id, photoId: photoId }, { onSuccess: () => refetch() })
+  }, [refetch, removePhoto, id])
+
   const inputStyle = useCallback((hasError: boolean) => {
     let style = `block w-full p-2 text-md font-normal text-gray-700 bg-white bg-clip-padding border border-solid rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-purple-600 focus:outline-none`
 
@@ -60,7 +66,7 @@ const EditarBolo: NextPage = () => {
 
   return <DashboardLayout>
     <h1 className="text-3xl text-purple-500 font-bold">Editar Bolo</h1>
-    <div className="flex flex-row mt-10 ">
+    <div className="flex flex-row mt-10 gap-10">
       <form className="w-1/2" onSubmit={handleSubmit(onSubmit)}>
         <h3 className="text-xl text-center">Informações</h3>
         <div className="flex flex-col gap-2">
@@ -116,14 +122,20 @@ const EditarBolo: NextPage = () => {
       </form>
       <div className="w-1/2">
         <h3 className="text-xl text-center">Photos</h3>
-        <div className="flex">
+        <div className="flex gap-2">
           {data?.photos?.map((photo, index) => (
-            <div key={photo} >
+            <div key={photo.id} className="border border-spacing-2 w-1/4 relative">
               <Image
-                src={photo}
+                src={photo.url}
                 alt={`photo-${index}`}
-                width={200}
-                height={200}
+                width={100}
+                height={100}
+                className="w-full"
+              />
+              <FaTrash
+                size={32}
+                className="absolute top-0 right-0 cursor-pointer bg-purple-500 text-white p-2 rounded hover:bg-purple-800 m-2"
+                onClick={() => handleRemovePhoto(photo.id)}
               />
             </div>
           ))}

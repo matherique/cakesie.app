@@ -4,6 +4,11 @@ export const getByIdSchema = z.object({
   id: z.string(),
 });
 
+export const removePhotoSchema = z.object({
+  cakeId: z.string(),
+  photoId: z.string(),
+});
+
 export const createSchema = z.object({
   name: z.string(),
   description: z.string(),

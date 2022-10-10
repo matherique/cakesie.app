@@ -1,4 +1,4 @@
-import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const BUCKET_NAME = "cakesie-app"
@@ -29,4 +29,13 @@ export async function get(filename: string) {
   });
 
   return getSignedUrl(client, cmd, { expiresIn: 60 * 60 })
+}
+
+export async function remove(filename: string) {
+  const cmd = new DeleteObjectCommand({
+    Bucket: BUCKET_NAME,
+    Key: filename,
+  });
+
+  return client.send(cmd)
 }
