@@ -1,5 +1,6 @@
 import DashboardLayout from "@/components/dashboard-layout";
 import { CreateCakeSchemaType } from "@/shared/validations/cake";
+import { fileListToArrayBuffer, toBase64 } from "@/utils/convert";
 import { trpc } from "@/utils/trpc";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -23,23 +24,18 @@ const CadastrarBolo: NextPage = () => {
     },
   } = useForm<AddCake>()
 
-  const { mutateAsync: createCake, data } = trpc.useMutation(["cake.create"])
+  const { mutate: createCake, data } = trpc.useMutation(["cake.create"])
 
   const onSubmit = useCallback(async (data: AddCake) => {
-    const bfs: ArrayBuffer[] = [];
-    for (let i = 0; i < data.image.length; i++) {
-      const file = data.image[i];
-      const buffer = await file!.arrayBuffer();
-      bfs.push(buffer);
-    }
+    const buffers = await fileListToArrayBuffer(data.image)
+    const files = buffers.map<string>(toBase64)
 
-    await createCake({
+    createCake({
       ...data,
       price: Number(data.price || 0),
       photos_length: data.image.length,
-      files: bfs.map<string>(buff => Buffer.from(buff).toString("base64"))
-    })
-    reset()
+      files
+    }, { onSuccess: () => reset() })
   }, [createCake, reset])
 
   const inputStyle = useCallback((hasError: boolean) => {
