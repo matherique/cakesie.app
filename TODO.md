@@ -8,8 +8,8 @@
       - [ ] ? Cortar imagem 
     - [ ] Adicionar foto principal
   - [ ] Editar 
-    - [ ] Remover fotos 
-      - [ ] Deletar do bucket
+    - [x] Remover fotos 
+      - [x] Deletar do bucket
     - [ ] Adicionar mais fotos
     - [ ] Editar informações
   - [x] Desativar 
