@@ -3,6 +3,7 @@ import { CreateCakeSchemaType } from "@/shared/validations/cake";
 import { trpc } from "@/utils/trpc";
 import { NextPage } from "next";
 import Image from "next/future/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -65,7 +66,14 @@ const EditarBolo: NextPage = () => {
   }, [])
 
   return <DashboardLayout>
-    <h1 className="text-3xl text-purple-500 font-bold">Editar Bolo</h1>
+    <header className="flex gap-2 justify-between mb-5">
+      <h1 className="text-3xl text-purple-500 font-bold">Editar Bolo</h1>
+      <Link href="/dashboard/bolos/listar">
+        <a className="px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out">
+          Voltar
+        </a>
+      </Link>
+    </header>
     <div className="flex flex-row mt-10 gap-10">
       <form className="w-1/2" onSubmit={handleSubmit(onSubmit)}>
         <h3 className="text-xl text-center">Informações</h3>
@@ -115,7 +123,7 @@ const EditarBolo: NextPage = () => {
             <button
               className="inline-block px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out w-full"
             >
-              Cadastrar
+              Salvar
             </button>
           </div>
         </div>
