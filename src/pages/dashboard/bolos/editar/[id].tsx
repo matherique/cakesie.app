@@ -1,5 +1,7 @@
 import DashboardLayout from "@/components/dashboard-layout";
+import useAlert from "@/hooks/useAlerts";
 import { CreateCakeSchemaType } from "@/shared/validations/cake";
+import { fileListToArrayBuffer, toBase64 } from "@/utils/convert";
 import { trpc } from "@/utils/trpc";
 import { NextPage } from "next";
 import Image from "next/future/image";
@@ -28,6 +30,8 @@ const EditarBolo: NextPage = () => {
 
   const { data, isSuccess, refetch } = trpc.useQuery(["cake.getById", { id }])
   const { mutate: removePhoto } = trpc.useMutation("cake.removePhoto")
+  const { mutate: update } = trpc.useMutation("cake.update")
+  const { success, error } = useAlert()
 
   useEffect(() => {
     if (!isSuccess) return
@@ -37,22 +41,27 @@ const EditarBolo: NextPage = () => {
     setValue("price", data.cake.price)
   }, [data, isSuccess, setValue])
 
-  const onSubmit = useCallback(async (data: AddCake) => { }, [])
-  //   const bfs: ArrayBuffer[] = [];
-  //   for (let i = 0; i < data.image.length; i++) {
-  //     const file = data.image[i];
-  //     const buffer = await file!.arrayBuffer();
-  //     bfs.push(buffer);
-  //   }
+  const onSubmit = useCallback(async (data: AddCake) => {
+    const buffers = await fileListToArrayBuffer(data.image)
+    const files = buffers.map<string>(toBase64)
 
-  //   await createCake({
-  //     ...data,
-  //     price: Number(data.price || 0),
-  //     photos_length: data.image.length,
-  //     files: bfs.map<string>(buff => Buffer.from(buff).toString("base64"))
-  //   })
-  //   reset()
-  // }, [createCake, reset])
+    update({
+      ...data,
+      id,
+      price: Number(data.price || 0),
+      photos_length: data.image.length,
+      files
+    }, {
+      onSuccess: () => {
+        success("Bolo atualizado com sucesso!")
+        refetch()
+      },
+      onError: (err) => {
+        error("Erro ao atualizar bolo!")
+        console.log(err)
+      }
+    })
+  }, [update, id, success, error, refetch])
 
   const handleRemovePhoto = useCallback(async (photoId: string) => {
     removePhoto({ cakeId: id, photoId: photoId }, { onSuccess: () => refetch() })

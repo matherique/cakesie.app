@@ -17,5 +17,14 @@ export const createSchema = z.object({
   files: z.array(z.string())
 })
 
+export const updateSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  price: z.number(),
+  photos_length: z.number(),
+  files: z.array(z.string())
+})
+
 
 export type CreateCakeSchemaType = z.infer<typeof createSchema>;
