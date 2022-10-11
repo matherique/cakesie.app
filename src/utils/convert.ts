@@ -1,3 +1,7 @@
+export async function toArrayBuffer(file: File): Promise<ArrayBuffer> {
+  return await file!.arrayBuffer();
+}
+
 export async function fileListToArrayBuffer(files: FileList): Promise<ArrayBuffer[]> {
   const buffers: ArrayBuffer[] = [];
   for (let i = 0; i < files.length; i++) {

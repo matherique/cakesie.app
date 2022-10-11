@@ -17,6 +17,7 @@ model Cake {
     name         String
     price        Float
     description  String
+    cover_image  String?
     status       Boolean        @default(true)
     shoppingCart ShoppingCart[]
     photos       Photos[]

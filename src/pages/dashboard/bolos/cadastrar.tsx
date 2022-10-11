@@ -1,6 +1,6 @@
 import DashboardLayout from "@/components/dashboard-layout";
 import { CreateCakeSchemaType } from "@/shared/validations/cake";
-import { fileListToArrayBuffer, toBase64 } from "@/utils/convert";
+import { fileListToArrayBuffer, toArrayBuffer, toBase64 } from "@/utils/convert";
 import { trpc } from "@/utils/trpc";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 
 type AddCake = CreateCakeSchemaType & {
   image: FileList
+  cover: FileList
 }
 
 const CadastrarBolo: NextPage = () => {
@@ -30,10 +31,17 @@ const CadastrarBolo: NextPage = () => {
     const buffers = await fileListToArrayBuffer(data.image)
     const files = buffers.map<string>(toBase64)
 
+    let cover_image = ""
+    if (data.cover.length > 0) {
+      const cover = await toArrayBuffer(data.cover.item(0)!)
+      cover_image = toBase64(cover)
+    }
+
     createCake({
       ...data,
       price: Number(data.price || 0),
       photos_length: data.image.length,
+      cover_image,
       files
     }, { onSuccess: () => reset() })
   }, [createCake, reset])
@@ -79,6 +87,16 @@ const CadastrarBolo: NextPage = () => {
               id="description"
               {...register("description", { required: true })}
               className={inputStyle(!!errors.description)}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label htmlFor="photos">Imagem principal</label>
+            <input
+              type="file"
+              id="photos"
+              {...register("cover", { required: true })}
+              accept="image/png, image/jpeg"
+              className={inputStyle(false)}
             />
           </div>
           <div className="flex flex-col gap-2">

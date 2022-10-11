@@ -15,11 +15,14 @@ export const cakeRouter = createRouter()
 
       if (!cake) throw new Error("could not find cake")
 
-      const photos = await Promise.all(cake.photos.map(async (photo) => {
+
+      const withoutCover = cake.photos.filter(photo => photo.id !== cake.cover_image)
+
+      const photos = await Promise.all(withoutCover.map(async (photo) => {
         return { id: photo.id, url: await get(`${cake.id}/${photo.id}.png`) }
       }))
 
-      return { cake, photos: photos }
+      return { cake, photos: photos, cover: await get(`${cake.id}/${cake.cover_image}.png`) }
     },
   }).mutation("create", {
     input: createSchema,
@@ -41,6 +44,17 @@ export const cakeRouter = createRouter()
       });
 
       if (!cake) throw new Error("could not create cake");
+
+      const photo = await prisma?.photos.create({ data: { cakeId: cake.id } })
+      if (!photo) throw new Error("could not create default photo")
+      await upload(`${cake.id}/${photo.id}.png`, Buffer.from(input.cover_image, "base64"))
+
+      await prisma?.cake.update({
+        where: { id: cake.id },
+        data: {
+          cover_image: photo.id,
+        }
+      });
 
       const promises = []
 

@@ -6,12 +6,12 @@
       - [x] Fazer upload na S3
       - [x] Criar url para visualizar a imagem
       - [ ] ? Cortar imagem 
-    - [ ] Adicionar foto principal
-  - [ ] Editar 
+    - [x] Adicionar foto principal
+  - [x] Editar 
     - [x] Remover fotos 
       - [x] Deletar do bucket
-    - [ ] Adicionar mais fotos
-    - [ ] Editar informações
+    - [x] Adicionar mais fotos
+    - [x] Editar informações
   - [x] Desativar 
   - [x] Listar 
   - [ ] Buscar  

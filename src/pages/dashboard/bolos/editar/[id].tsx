@@ -117,6 +117,27 @@ const EditarBolo: NextPage = () => {
               className={inputStyle(!!errors.description)}
             />
           </div>
+          {data?.cover ?
+            <div className="w-full h-2/3">
+              <Image
+                src={data?.cover}
+                alt={data?.cake.name}
+                width={100}
+                height={100}
+                className="w-32"
+              />
+            </div>
+            : null}
+          <div className="flex flex-col gap-2">
+            <label htmlFor="photos">Imagem principal</label>
+            <input
+              type="file"
+              id="photos"
+              {...register("cover_image", { required: true })}
+              accept="image/png, image/jpeg"
+              className={inputStyle(false)}
+            />
+          </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="photos">Fotos</label>
             <input

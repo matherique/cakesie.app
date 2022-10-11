@@ -14,7 +14,8 @@ export const createSchema = z.object({
   description: z.string(),
   price: z.number(),
   photos_length: z.number(),
-  files: z.array(z.string())
+  files: z.array(z.string()),
+  cover_image: z.string(),
 })
 
 export const updateSchema = z.object({
@@ -23,7 +24,8 @@ export const updateSchema = z.object({
   description: z.string(),
   price: z.number(),
   photos_length: z.number(),
-  files: z.array(z.string())
+  files: z.array(z.string()),
+  cover_image: z.string(),
 })
 
 
