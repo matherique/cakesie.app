@@ -57,7 +57,7 @@ const EditarBolo: NextPage = () => {
         refetch()
       },
       onError: (err) => {
-        error("Erro ao atualizar bolo!")
+        error("Erro ao atualizar bolo: " + err.message)
         console.log(err)
       }
     })
