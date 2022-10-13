@@ -69,19 +69,6 @@ export const cakeRouter = createRouter()
 
       await Promise.all(promises)
     }
-  }).query("photos", {
-    input: getByIdSchema,
-    async resolve({ input: { id } }) {
-      const cake = await prisma?.cake.findFirst({ where: { id }, include: { photos: true } })
-
-      if (!cake) throw new Error("could not find cake")
-
-      const photos = await Promise.all(cake.photos.map((photo) => {
-        return get(`${cake.id}/${photo.id}.png`)
-      }))
-
-      return { photos: photos }
-    }
   }).mutation("disable", {
     input: getByIdSchema,
     async resolve({ input: { id } }) {
