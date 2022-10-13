@@ -1,6 +1,6 @@
 # MVP
 
-- [ ] Gerenciar Bolo 
+- [x] Gerenciar Bolo 
   - [x] Cadastrar 
     - [x] Adicionar fotos
       - [x] Fazer upload na S3
@@ -14,7 +14,7 @@
     - [x] Editar informações
   - [x] Desativar 
   - [x] Listar 
-  - [ ] Buscar  
+  - [x] Buscar  
 - [ ] Gerenciar Usuário
   - [ ] Cadastrar 
   - [ ] Editar 
