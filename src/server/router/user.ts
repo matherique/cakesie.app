@@ -1,7 +1,7 @@
 import { loginSchema, signupSchema } from "@/shared/validations/user";
 import { Role } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
-import { compare, hash } from "../../utils/encrypter";
+import { compare, hash } from "@/shared/encrypter";
 import { createRouter } from "./context";
 
 export const userRouter = createRouter()

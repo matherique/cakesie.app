@@ -1,7 +1,7 @@
-import { getByIdSchema, createSchema, removePhotoSchema, updateSchema } from "@/shared/validations/cake";
+import { getByIdSchema, createSchema, removePhotoSchema, updateSchema, searchSchema } from "@/shared/validations/cake";
 import { TRPCError } from "@trpc/server";
 import { createRouter } from "./context";
-import { get, remove, upload } from "@/utils/s3";
+import { get, remove, upload } from "@/shared/s3";
 
 export const cakeRouter = createRouter()
   .query("getAll", {
@@ -126,4 +126,9 @@ export const cakeRouter = createRouter()
         }
       });
     }
+  }).mutation("search", {
+    input: searchSchema,
+    async resolve({ input: { query } }) {
+
+    },
   })

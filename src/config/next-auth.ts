@@ -1,5 +1,5 @@
 import { loginSchema } from "@/shared/validations/user";
-import { compare } from "@/utils/encrypter";
+import { compare } from "@/shared/encrypter";
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 

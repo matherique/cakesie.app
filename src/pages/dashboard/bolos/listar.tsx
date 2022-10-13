@@ -1,6 +1,6 @@
 import DashboardLayout from "@/components/dashboard-layout";
 import useAlert from "@/hooks/useAlerts";
-import { trpc } from "@/utils/trpc";
+import { trpc } from "@/shared/trpc";
 import { NextPage } from "next";
 import Link from "next/link";
 import { useCallback } from "react";

@@ -1,4 +1,4 @@
-import { trpc } from "@/utils/trpc";
+import { trpc } from "@/shared/trpc";
 import { Title } from "./title";
 import { StepProps } from "./types";
 

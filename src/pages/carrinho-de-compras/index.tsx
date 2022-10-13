@@ -3,7 +3,7 @@ import { NextPage } from "next";
 import Bolo from "@/public/bolo.jpeg";
 import Image from "next/image"
 import React, { useCallback, useMemo, useState } from "react";
-import { trpc } from "@/utils/trpc";
+import { trpc } from "@/shared/trpc";
 
 enum Envio {
   Retirada = "Retirada",

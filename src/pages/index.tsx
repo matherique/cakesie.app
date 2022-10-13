@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Layout from "@/components/layout";
 import Bolo from "@/public/bolo.jpeg";
-import { trpc } from "@/utils/trpc";
+import { trpc } from "@/shared/trpc";
 import { Cake } from "@prisma/client";
 
 const CakeCard: React.FC<{ cake: Cake }> = ({ cake }) => {

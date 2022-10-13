@@ -3,7 +3,7 @@ import Image from "next/image";
 import * as React from "react";
 import Layout from "@/components/layout";
 import Bolo from "@/public/bolo.jpeg";
-import { trpc } from "@/utils/trpc";
+import { trpc } from "@/shared/trpc";
 import { useEffect } from "react";
 import useAlert from "@/hooks/useAlerts";
 import useAuth from "@/hooks/useAuth";

@@ -1,8 +1,8 @@
 import DashboardLayout from "@/components/dashboard-layout";
 import useAlert from "@/hooks/useAlerts";
 import { CreateCakeSchemaType } from "@/shared/validations/cake";
-import { fileListToArrayBuffer, toBase64 } from "@/utils/convert";
-import { trpc } from "@/utils/trpc";
+import { fileListToArrayBuffer, toBase64 } from "@/shared/convert";
+import { trpc } from "@/shared/trpc";
 import { NextPage } from "next";
 import Image from "next/future/image";
 import Link from "next/link";
