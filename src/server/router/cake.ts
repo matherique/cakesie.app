@@ -2,11 +2,22 @@ import { getByIdSchema, createSchema, removePhotoSchema, updateSchema, searchSch
 import { TRPCError } from "@trpc/server";
 import { createRouter } from "./context";
 import { get, remove, upload } from "@/shared/s3";
+import { Cake } from "@prisma/client";
 
 export const cakeRouter = createRouter()
   .query("getAll", {
-    async resolve() {
-      return await prisma?.cake.findMany();
+    input: searchSchema,
+    async resolve({ input: { query } }) {
+      let cakes: Cake[] | undefined = []
+      if (query) {
+        cakes = await prisma?.cake.findMany({ where: { name: { contains: query } } })
+      } else {
+        cakes = await prisma?.cake.findMany()
+      }
+
+      if (!cakes) throw new Error("could not find cakes")
+
+      return cakes
     },
   }).query("getById", {
     input: getByIdSchema,
@@ -129,6 +140,15 @@ export const cakeRouter = createRouter()
   }).mutation("search", {
     input: searchSchema,
     async resolve({ input: { query } }) {
+      let cakes: Cake[] | undefined = []
+      if (query) {
+        cakes = await prisma?.cake.findMany({ where: { name: { contains: query } } })
+      } else {
+        cakes = await prisma?.cake.findMany()
+      }
 
+      if (!cakes) throw new Error("could not find cakes")
+
+      return cakes
     },
   })

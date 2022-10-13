@@ -29,8 +29,7 @@ export const updateSchema = z.object({
 })
 
 export const searchSchema = z.object({
-  query: z.string(),
+  query: z.string().nullable(),
 })
-
 
 export type CreateCakeSchemaType = z.infer<typeof createSchema>;
