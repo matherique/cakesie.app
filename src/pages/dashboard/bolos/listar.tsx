@@ -3,23 +3,23 @@ import useAlert from "@/hooks/useAlerts";
 import { trpc } from "@/shared/trpc";
 import { NextPage } from "next";
 import Link from "next/link";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
 const ListarBolos: NextPage = () => {
   const [query, setQuery] = useState("");
-  const { data, isLoading, refetch } = trpc.useQuery(["cake.getAll", { query }]);
+  const { data, refetch } = trpc.useQuery(["cake.getAll", { query }]);
   const { mutate: disable } = trpc.useMutation("cake.disable");
   const { success } = useAlert()
 
-  const handleDeleteCake = async (id: string) => {
+  const handleDeleteCake = useCallback(async (id: string) => {
     disable({ id }, {
       onSuccess: () => {
         success("Bolo deletado com sucesso")
         refetch()
       }
     })
-  }
+  }, [disable, refetch, success])
 
   return <DashboardLayout>
     <header className="flex gap-2 justify-between mb-5">
