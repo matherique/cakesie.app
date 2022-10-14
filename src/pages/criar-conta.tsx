@@ -8,7 +8,7 @@ import { trpc } from "@/shared/trpc";
 import { signupSchema, SignupSchemaType } from "@/shared/validations/user";
 
 export default function CreateAccount() {
-  const { mutate, isError } = trpc.useMutation("user.create");
+  const { mutate, isError } = trpc.useMutation("user.register");
 
   const {
     register,
@@ -31,8 +31,8 @@ export default function CreateAccount() {
           <input
             type="text"
             className={`${errors?.name
-                ? "border-red-600 focus:border-red-600"
-                : "border-gray-300 focus:border-purple-600 "
+              ? "border-red-600 focus:border-red-600"
+              : "border-gray-300 focus:border-purple-600 "
               } form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:outline-none`}
             placeholder="Nome Completo"
             {...register("name")}
@@ -43,8 +43,8 @@ export default function CreateAccount() {
           <input
             type="text"
             className={`${errors?.email
-                ? "border-red-600 focus:border-red-600"
-                : "border-gray-300 focus:border-purple-600 "
+              ? "border-red-600 focus:border-red-600"
+              : "border-gray-300 focus:border-purple-600 "
               } form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:outline-none`}
             placeholder="Email"
             {...register("email")}
@@ -55,8 +55,8 @@ export default function CreateAccount() {
           <input
             type="password"
             className={`${errors?.password
-                ? "border-red-600 focus:border-red-600"
-                : "border-gray-300 focus:border-purple-600 "
+              ? "border-red-600 focus:border-red-600"
+              : "border-gray-300 focus:border-purple-600 "
               } form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:outline-none`}
             placeholder="Senha"
             {...register("password")}

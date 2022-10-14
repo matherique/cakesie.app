@@ -1,14 +1,13 @@
-import { loginSchema, signupSchema } from "@/shared/validations/user";
-import { Role } from "@prisma/client";
+import { loginSchema, searchSchema, signupSchema, createSchema } from "@/shared/validations/user";
+import { Role, User } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { compare, hash } from "@/shared/encrypter";
 import { createRouter } from "./context";
 
 export const userRouter = createRouter()
-  .mutation("create", {
+  .mutation("register", {
     input: signupSchema,
     async resolve({ input }) {
-      console.log(input);
       const hashed = await hash(input.password);
 
       const user = await prisma?.user.create({
@@ -49,9 +48,37 @@ export const userRouter = createRouter()
     },
   })
   .query("getAll", {
-    async resolve() {
-      return await prisma?.user.findMany({
-        where: { role: Role.CLIENT },
-      });
+    input: searchSchema,
+    async resolve({ input: { query } }) {
+      let users: User[] | undefined = []
+      if (query) {
+        users = await prisma?.user.findMany({ where: { name: { contains: query } } })
+      } else {
+        users = await prisma?.user.findMany()
+      }
+
+      if (!users) throw new Error("could not find cakes")
+
+      return users
     },
-  });
+  }).mutation("create", {
+    input: createSchema,
+    async resolve({ input }) {
+      const hashed = await hash(input.password);
+
+      let role: Role = input.role as Role || Role.CLIENT
+
+      const user = await prisma?.user.create({
+        data: {
+          name: input.name,
+          email: input.email,
+          password: hashed,
+          role,
+        },
+      });
+
+      if (!user) throw new Error("could not create user");
+
+      return user;
+    },
+  })

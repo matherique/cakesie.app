@@ -13,4 +13,17 @@ export const loginSchema = z.object({
   password: z.string(),
 });
 
+export const searchSchema = z.object({
+  query: z.string().nullable(),
+});
+
 export type LoginSchemaType = z.infer<typeof loginSchema>;
+
+export const createSchema = z.object({
+  name: z.string(),
+  email: z.string(),
+  password: z.string(),
+  role: z.string().nullable(),
+})
+
+export type CreateUserType = z.infer<typeof createSchema>;
