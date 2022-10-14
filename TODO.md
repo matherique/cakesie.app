@@ -16,10 +16,10 @@
   - [x] Listar 
   - [x] Buscar  
 - [ ] Gerenciar Usuário
-  - [ ] Cadastrar 
+  - [x] Cadastrar 
   - [ ] Editar 
-  - [ ] Busar
-  - [ ] Listar
+  - [x] Busar
+  - [x] Listar
   - [ ] Login
   - [ ] Logout
 - [ ] Gerenciar Pedido
