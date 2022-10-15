@@ -20,8 +20,9 @@
   - [ ] Editar 
   - [x] Busar
   - [x] Listar
-  - [ ] Login
-  - [ ] Logout
+  - [x] Login
+  - [x] Logout
+  - [x] Delete
 - [ ] Gerenciar Pedido
   - [ ] Criar um pedido
     - [ ] Step 1: Escolher ou cadastrar um novo cliente
