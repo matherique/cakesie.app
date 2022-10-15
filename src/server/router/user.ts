@@ -1,4 +1,4 @@
-import { loginSchema, searchSchema, signupSchema, createSchema } from "@/shared/validations/user";
+import { loginSchema, searchSchema, signupSchema, createSchema, deleteByIdSchema } from "@/shared/validations/user";
 import { Role, User } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { compare, hash } from "@/shared/encrypter";
@@ -81,4 +81,9 @@ export const userRouter = createRouter()
 
       return user;
     },
+  }).mutation("delete", {
+    input: deleteByIdSchema,
+    async resolve({ input }) {
+      await prisma?.user.delete({ where: { id: input.id } })
+    }
   })

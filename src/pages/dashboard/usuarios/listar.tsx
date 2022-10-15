@@ -8,7 +8,20 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 
 const ListaUsuario: NextPage = () => {
   const [query, setQuery] = useState("");
-  const { data } = trpc.useQuery(["user.getAll", { query }]);
+  const { data: users, refetch } = trpc.useQuery(["user.getAll", { query }]);
+  const { success, error } = useAlert()
+
+  const { mutate: deleteUser } = trpc.useMutation(["user.delete"]);
+
+  const handleDelete = useCallback((id: string) => {
+    deleteUser({ id }, {
+      onSuccess: () => {
+        success("Usuário deletado com sucesso")
+        refetch()
+      },
+      onError: () => { error("Erro ao deletar usuário") }
+    });
+  }, [deleteUser, error, refetch, success])
 
   return <DashboardLayout>
     <header className="flex gap-2 justify-between mb-5">
@@ -37,7 +50,7 @@ const ListaUsuario: NextPage = () => {
           </tr>
         </thead>
         <tbody>
-          {data?.map(user => (
+          {users?.map(user => (
             <tr key={user.id}>
               <td>{user.name}</td>
               <td>{user.email}</td>
@@ -47,7 +60,7 @@ const ListaUsuario: NextPage = () => {
                     <FaEdit size={30} color="#1e40af" />
                   </a>
                 </Link>
-                <span className="cursor-pointer" onClick={() => console.log(user.id)}>
+                <span className="cursor-pointer" onClick={() => handleDelete(user.id)}>
                   <FaTrash size={23} color="#991b1b" />
                 </span>
               </td>
