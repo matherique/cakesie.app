@@ -65,7 +65,7 @@ const CadastrarUsuario: NextPage = () => {
           <div className="flex flex-col gap-2">
             <label htmlFor="password">Senha</label>
             <input
-              type="text"
+              type="password"
               id="password"
               {...register("email", { required: true })}
               className={inputStyle(!!errors.password)}
@@ -73,7 +73,10 @@ const CadastrarUsuario: NextPage = () => {
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="role">Nível</label>
-            <select className={inputStyle(!!errors.role)} id="role">
+            <select
+              className={inputStyle(!!errors.role)} id="role"
+              {...register("role", { required: true })}
+            >
               <option>Escolha um nível de acesso</option>
               <option value={Role.CLIENT} selected>Cliente</option>
               <option value={Role.ENPLOYEE}>Funcionário</option>
