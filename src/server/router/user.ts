@@ -1,8 +1,16 @@
-import { loginSchema, searchSchema, signupSchema, createSchema, deleteByIdSchema } from "@/shared/validations/user";
+import {
+  loginSchema,
+  searchSchema,
+  signupSchema,
+  createSchema,
+  deleteByIdSchema,
+  updateSchema,
+} from "@/shared/validations/user";
 import { Role, User } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { compare, hash } from "@/shared/encrypter";
 import { createRouter } from "./context";
+import { z } from "zod";
 
 export const userRouter = createRouter()
   .mutation("register", {
@@ -85,5 +93,43 @@ export const userRouter = createRouter()
     input: deleteByIdSchema,
     async resolve({ input }) {
       await prisma?.user.delete({ where: { id: input.id } })
+    }
+  }).query("get", {
+    input: z.string(),
+    async resolve({ input: id }) {
+      const user = await prisma?.user.findUnique({ where: { id } })
+
+      if (!user) throw new Error("could not find user")
+
+      return user
+    }
+  }).mutation("update", {
+    input: updateSchema,
+    async resolve({ input }) {
+      let user: User | undefined = undefined;
+      if (input.password) {
+        user = await prisma?.user.update({
+          where: { id: input.id },
+          data: {
+            name: input.name,
+            email: input.email,
+            role: input.role as Role,
+            password: await hash(input.password)
+          }
+        });
+      } else {
+        user = await prisma?.user.update({
+          where: { id: input.id },
+          data: {
+            name: input.name,
+            email: input.email,
+            role: input.role as Role,
+          }
+        });
+      }
+
+      if (!user) throw new Error("could not update user");
+
+      return user;
     }
   })
