@@ -15,9 +15,9 @@
   - [x] Desativar 
   - [x] Listar 
   - [x] Buscar  
-- [ ] Gerenciar Usuário
+- [x] Gerenciar Usuário
   - [x] Cadastrar 
-  - [ ] Editar 
+  - [x] Editar 
   - [x] Busar
   - [x] Listar
   - [x] Login
