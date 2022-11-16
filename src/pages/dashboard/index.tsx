@@ -1,5 +1,10 @@
 import DashboardLayout from "@/components/dashboard-layout";
-import { NextPage } from "next";
+import privateRoute from "@/shared/auth";
+import { GetServerSideProps, NextPage } from "next";
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  return privateRoute(context);
+}
 
 const Home: NextPage = () => {
   return (

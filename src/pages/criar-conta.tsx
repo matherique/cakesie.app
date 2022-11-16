@@ -6,9 +6,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import UnauthenticatedClient from "@/components/unauthenticated-client";
 import { trpc } from "@/shared/trpc";
 import { signupSchema, SignupSchemaType } from "@/shared/validations/user";
+import useAlert from "@/hooks/useAlerts";
 
 export default function CreateAccount() {
   const { mutate, isError } = trpc.useMutation("user.register");
+  const { success, error } = useAlert();
 
   const {
     register,
@@ -21,6 +23,13 @@ export default function CreateAccount() {
       email: data.email,
       name: data.name,
       password: data.password,
+    }, {
+      onSuccess: () => {
+        success("Conta criada com sucesso!");
+      },
+      onError: () => {
+        error("Erro ao criar conta!");
+      }
     });
   }
 
@@ -62,13 +71,6 @@ export default function CreateAccount() {
             {...register("password")}
           />
         </div>
-
-        {isError && (
-          <div className="flex justify-between items-center mb-3 p-1 text-red-700 font-bold">
-            <h1>Usuário ou senha inválidos</h1>
-          </div>
-        )}
-
         <button
           type="submit"
           className="inline-block px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out w-full"
@@ -83,10 +85,8 @@ export default function CreateAccount() {
         <div className="flex items-center my-4">
           <p className="text-center font-semibold mx-4 mb-0">
             Ja possui conta?{" "}
-            <Link href="/entrar">
-              <a className="text-purple-600 hover:text-purple-700 transition duration-300 ease-in-out mb-4">
-                Entre
-              </a>
+            <Link href="/entrar" className="text-purple-600 hover:text-purple-700 transition duration-300 ease-in-out mb-4">
+              Entre
             </Link>
           </p>
         </div>

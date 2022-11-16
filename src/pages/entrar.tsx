@@ -15,7 +15,7 @@ export default function Login() {
   });
 
   const onSubmit = React.useCallback(async (data: LoginSchemaType) => {
-    await signIn("credentials", { ...data, callbackUrl: "/" });
+    await signIn("credentials", { ...data, callbackUrl: "/dashboard/" });
   }, [])
 
   return (
@@ -75,14 +75,12 @@ export default function Login() {
         <div className="flex items-center my-4">
           <p className="text-center font-semibold mx-4 mb-0">
             Não possui conta?{" "}
-            <Link href="/criar-conta">
-              <a className="text-purple-600 hover:text-purple-700 transition duration-300 ease-in-out mb-4">
-                Cadastre-se
-              </a>
+            <Link href="/criar-conta" className="text-purple-600 hover:text-purple-700 transition duration-300 ease-in-out mb-4">
+              Cadastre-se
             </Link>
           </p>
         </div>
       </form>
-    </UnauthenticatedClient>
+    </UnauthenticatedClient >
   );
 }

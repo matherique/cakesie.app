@@ -38,6 +38,7 @@ export const nextAuthConfig: NextAuthOptions = {
       },
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     jwt: async ({ token, user }) => {
       if (user) {
@@ -64,4 +65,5 @@ export const nextAuthConfig: NextAuthOptions = {
     signIn: "/criar-conta",
     newUser: "/entrar",
   },
+  debug: true,
 };

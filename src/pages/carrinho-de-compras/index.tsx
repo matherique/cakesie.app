@@ -48,7 +48,6 @@ const CarrinhoCompras: NextPage = () => {
           <Image
             src={Bolo}
             alt="logo"
-            layout="responsive"
           />
         </div>
         <div className="flex flex-col px-2">

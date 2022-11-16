@@ -83,10 +83,11 @@ const EditarUsuario: NextPage = () => {
   return <DashboardLayout>
     <header className="flex gap-2 justify-between mb-5">
       <h1 className="text-3xl text-purple-500 font-bold">Cadastrar Usuários</h1>
-      <Link href="/dashboard/usuarios/listar">
-        <a className="px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out">
-          Voltar
-        </a>
+      <Link
+        href="/dashboard/usuarios/listar"
+        className="px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out"
+      >
+        Voltar
       </Link>
     </header>
     <div className="flex flex-row mt-10 ">

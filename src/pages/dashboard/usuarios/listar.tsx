@@ -40,10 +40,11 @@ const ListaUsuario: NextPage = () => {
   return <DashboardLayout>
     <header className="flex gap-2 justify-between mb-5">
       <h1 className="text-3xl text-purple-500 font-bold">Lista de Usuários</h1>
-      <Link href="/dashboard/usuarios/cadastrar">
-        <a className="px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out">
-          Novo
-        </a>
+      <Link
+        href="/dashboard/usuarios/cadastrar"
+        className="px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out"
+      >
+        Novo
       </Link>
     </header>
     <div className="w-full mb-5">
@@ -72,9 +73,7 @@ const ListaUsuario: NextPage = () => {
               <td>{getProfile(user.role)}</td>
               <td className="flex items-center gap-2">
                 <Link href={`/dashboard/usuarios/editar/${user.id}`}>
-                  <a>
-                    <FaEdit size={30} color="#1e40af" />
-                  </a>
+                  <FaEdit size={30} color="#1e40af" />
                 </Link>
                 <span className="cursor-pointer" onClick={() => handleDelete(user.id)}>
                   <FaTrash size={23} color="#991b1b" />
@@ -85,7 +84,7 @@ const ListaUsuario: NextPage = () => {
         </tbody>
       </table>
     </div>
-  </DashboardLayout>
+  </DashboardLayout >
 }
 
 export default ListaUsuario

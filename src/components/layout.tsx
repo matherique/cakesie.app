@@ -33,10 +33,8 @@ function Menu() {
     <nav className="relative w-full flex flex-wrap items-center justify-between py-4 text-gray-500 hover:text-gray-700 focus:text-gray-700">
       <div className="container-fluid w-full flex flex-wrap items-center justify-between">
         <div className="container-fluid basis-1/2">
-          <Link href="/">
-            <a className="flex items-center text-gray-900 hover:text-gray-900 focus:text-gray-900 mt-2 lg:mt-0 mr-1">
-              <Image src={Logo} alt="logo" width={200} height={100} />
-            </a>
+          <Link href="/" className="flex items-center text-gray-900 hover:text-gray-900 focus:text-gray-900 mt-2 lg:mt-0 mr-1">
+            <Image src={Logo} alt="logo" width={200} height={100} />
           </Link>
         </div>
         <div className="container-fluid flex items-center gap-x-5">
@@ -54,25 +52,19 @@ function Menu() {
               </small>
             </div>
             <Link href="/carrinho-de-compras">
-              <a>
-                <CartIcon hasItens={data ?? false} />
-              </a>
+              <CartIcon hasItens={data ?? false} />
             </Link>
           </div> : (<>
-            <Link href="/criar-conta">
-              <a className="text-purple-600 hover:text-purple-700 transition duration-300 ease-in-out">
-                Criar conta
-              </a>
+            <Link href="/criar-conta" className="text-purple-600 hover:text-purple-700 transition duration-300 ease-in-out">
+              Criar conta
             </Link>
-            <Link href="/entrar">
-              <a className="inline-block px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out">
-                Entrar
-              </a>
+            <Link href="/entrar" className="inline-block px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out">
+              Entrar
             </Link>
           </>)}
         </div>
       </div>
-    </nav>
+    </nav >
   );
 }
 

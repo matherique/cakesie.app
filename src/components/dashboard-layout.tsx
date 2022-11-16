@@ -13,51 +13,46 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
           </a>
           <ul className="space-y-2">
             <li>
-              <Link href="/dashboard/bolos/listar" >
-                <a
-                  className="group flex items-center p-2 text-base font-normal text-purple-900 rounded-lg dark:text-white hover:bg-purple-100 dark:hover:bg-purple-300 hover:text-white"
-                >
-                  <FaBirthdayCake size={26} color="#9333ea" />
-                  <span className="flex-1 ml-3 whitespace-nowrap text-purple-800 group-hover:text-white">
-                    Bolos
-                  </span>
-                </a>
+              <Link
+                href="/dashboard/bolos/listar"
+                className="group flex items-center p-2 text-base font-normal text-purple-900 rounded-lg dark:text-white hover:bg-purple-100 dark:hover:bg-purple-300 hover:text-white"
+              >
+                <FaBirthdayCake size={26} color="#9333ea" />
+                <span className="flex-1 ml-3 whitespace-nowrap text-purple-800 group-hover:text-white">
+                  Bolos
+                </span>
               </Link>
             </li>
             <li>
-              <Link href="/dashboard/usuarios/listar">
-                <a
-                  href="#"
-                  className="group flex items-center p-2 text-base font-normal text-purple-900 rounded-lg dark:text-white hover:bg-purple-100 dark:hover:bg-purple-300 hover:text-white"
-                >
-                  <FaUser size={26} color="#9333ea" />
-                  <span className="flex-1 ml-3 whitespace-nowrap text-purple-800 group-hover:text-white">
-                    Usuários
-                  </span>
-                </a>
+              <Link
+                href="/dashboard/usuarios/listar"
+                className="group flex items-center p-2 text-base font-normal text-purple-900 rounded-lg dark:text-white hover:bg-purple-100 dark:hover:bg-purple-300 hover:text-white"
+              >
+                <FaUser size={26} color="#9333ea" />
+                <span className="flex-1 ml-3 whitespace-nowrap text-purple-800 group-hover:text-white">
+                  Usuários
+                </span>
               </Link>
             </li>
             <li>
-              <Link href="/dashboard/pedidos/criar">
-                <a
-                  href="#"
-                  className="group flex items-center p-2 text-base font-normal text-purple-900 rounded-lg dark:text-white hover:bg-purple-100 dark:hover:bg-purple-300 hover:text-white"
-                >
-                  <FaClipboardList size={26} color="#9333ea" />
-                  <span className="flex-1 ml-3 whitespace-nowrap text-purple-800 group-hover:text-white">
-                    Pedidos
-                  </span>
-                  <span className="inline-flex justify-center items-center p-3 ml-3 w-3 h-3 text-sm font-medium text-purple-600 bg-purple-200 rounded-full dark:bg-purple-900 dark:text-purple-200">
-                    3
-                  </span>
-                </a>
+              <Link
+                href="/dashboard/pedidos/criar"
+                className="group flex items-center p-2 text-base font-normal text-purple-900 rounded-lg dark:text-white hover:bg-purple-100 dark:hover:bg-purple-300 hover:text-white"
+              >
+                <FaClipboardList size={26} color="#9333ea" />
+                <span className="flex-1 ml-3 whitespace-nowrap text-purple-800 group-hover:text-white">
+                  Pedidos
+                </span>
+                <span className="inline-flex justify-center items-center p-3 ml-3 w-3 h-3 text-sm font-medium text-purple-600 bg-purple-200 rounded-full dark:bg-purple-900 dark:text-purple-200">
+                  3
+                </span>
               </Link>
             </li>
           </ul>
         </div>
-      </aside>
+      </aside >
       <div className="w-full p-6">{children}</div>
-    </div>
+    </div >
   );
 }
 
