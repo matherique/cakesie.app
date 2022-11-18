@@ -11,7 +11,7 @@ const CakeCard: React.FC<{ cake: Cake }> = ({ cake }) => {
     <div className="basis-1/2 shadow-md p-2">
       <div className="grid grid-cols-[200px,1fr]">
         <div>
-          <Image src={Bolo} alt="logo" layout="intrinsic" objectFit="cover" />
+          <Image src={Bolo} alt="logo" />
         </div>
         <div className="flex flex-col justify-start pr-2 pl-2">
           <h5 className="text-gray-900 text-xl font-medium pb-2">

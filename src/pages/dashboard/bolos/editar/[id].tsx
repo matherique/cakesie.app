@@ -4,7 +4,7 @@ import { CreateCakeSchemaType } from "@/shared/validations/cake";
 import { fileListToArrayBuffer, toBase64 } from "@/shared/convert";
 import { trpc } from "@/shared/trpc";
 import { NextPage } from "next";
-import Image from "next/future/image";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useEffect } from "react";
