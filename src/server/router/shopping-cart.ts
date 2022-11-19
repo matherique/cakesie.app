@@ -1,4 +1,4 @@
-import { addItemInput, removeInput, updateQuantity } from "@/shared/validations/shopping-cart";
+import { addItemInput, removeInput, updateQuantity } from "@shared/validations/shopping-cart";
 import { TRPCError } from "@trpc/server";
 import { createRouter } from "./context";
 

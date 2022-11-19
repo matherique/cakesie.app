@@ -1,8 +1,8 @@
-import { loginSchema } from "@/shared/validations/user";
-import { compare } from "@/shared/encrypter";
+import { loginSchema } from "@shared/validations/user";
+import { compare } from "@shared/encrypter";
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { prisma } from "@/server/db/client"
+import { prisma } from "@server/db/client"
 
 export const nextAuthConfig: NextAuthOptions = {
   providers: [

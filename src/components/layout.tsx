@@ -2,9 +2,9 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { FaCartPlus, FaShoppingCart } from "react-icons/fa";
-import Logo from "@/public/logo.png";
+import Logo from "@public/logo.png";
 import { signOut, useSession } from "next-auth/react";
-import { trpc } from "@/shared/trpc";
+import { trpc } from "@shared/trpc";
 
 type BreadcrumbItem = {
   href: string;

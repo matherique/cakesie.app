@@ -1,4 +1,4 @@
-import DashboardLayout from "@/components/dashboard-layout";
+import DashboardLayout from "@components/dashboard-layout";
 import { NextPage } from "next";
 import * as React from "react";
 import EscolhaBoloStep from "./escolha-bolo";

@@ -5,10 +5,10 @@ import {
   createSchema,
   deleteByIdSchema,
   updateSchema,
-} from "@/shared/validations/user";
+} from "@shared/validations/user";
 import { Role, User } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
-import { compare, hash } from "@/shared/encrypter";
+import { compare, hash } from "@shared/encrypter";
 import { createRouter } from "./context";
 import { z } from "zod";
 

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Logo from "@/public/logo.png";
+import Logo from "@public/logo.png";
 import { FaBirthdayCake, FaClipboardList, FaUser } from "react-icons/fa";
 import Link from "next/link";
 

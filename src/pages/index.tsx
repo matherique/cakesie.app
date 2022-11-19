@@ -1,9 +1,9 @@
 import Image from "next/image";
 import * as React from "react";
-import Logo from "@/public/logo.png";
+import Logo from "@public/logo.png";
 import type { NextPage } from "next";
 import { useForm } from "react-hook-form";
-import { loginSchema, LoginSchemaType } from "@/shared/validations/user";
+import { loginSchema, LoginSchemaType } from "@shared/validations/user";
 import { signIn } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 

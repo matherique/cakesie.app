@@ -1,7 +1,7 @@
-import { getByIdSchema, createSchema, removePhotoSchema, updateSchema, searchSchema } from "@/shared/validations/cake";
+import { getByIdSchema, createSchema, removePhotoSchema, updateSchema, searchSchema } from "@shared/validations/cake";
 import { TRPCError } from "@trpc/server";
 import { createRouter } from "./context";
-import { get, remove, upload } from "@/shared/s3";
+import { get, remove, upload } from "@shared/s3";
 import { Cake } from "@prisma/client";
 
 export const cakeRouter = createRouter()

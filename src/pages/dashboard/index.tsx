@@ -1,5 +1,5 @@
-import DashboardLayout from "@/components/dashboard-layout";
-import privateRoute from "@/shared/auth";
+import DashboardLayout from "@components/dashboard-layout";
+import privateRoute from "@shared/auth";
 import { GetServerSideProps, NextPage } from "next";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {

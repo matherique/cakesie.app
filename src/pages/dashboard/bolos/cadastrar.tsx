@@ -1,7 +1,7 @@
-import DashboardLayout from "@/components/dashboard-layout";
-import { CreateCakeSchemaType } from "@/shared/validations/cake";
-import { fileListToArrayBuffer, toArrayBuffer, toBase64 } from "@/shared/convert";
-import { trpc } from "@/shared/trpc";
+import DashboardLayout from "@components/dashboard-layout";
+import { CreateCakeSchemaType } from "@shared/validations/cake";
+import { fileListToArrayBuffer, toArrayBuffer, toBase64 } from "@shared/convert";
+import { trpc } from "@shared/trpc";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useCallback } from "react";

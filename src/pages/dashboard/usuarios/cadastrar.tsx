@@ -1,10 +1,10 @@
-import DashboardLayout from "@/components/dashboard-layout";
-import { trpc } from "@/shared/trpc";
+import DashboardLayout from "@components/dashboard-layout";
+import { trpc } from "@shared/trpc";
 import { NextPage } from "next";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { CreateUserType } from "@/shared/validations/user";
-import useAlert from "@/hooks/useAlerts";
+import { CreateUserType } from "@shared/validations/user";
+import useAlert from "@hooks/useAlerts";
 import { Role } from "@prisma/client";
 
 const CadastrarUsuario: NextPage = () => {
