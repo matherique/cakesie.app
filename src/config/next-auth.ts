@@ -2,6 +2,7 @@ import { loginSchema } from "@/shared/validations/user";
 import { compare } from "@/shared/encrypter";
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { prisma } from "@/server/db/client"
 
 export const nextAuthConfig: NextAuthOptions = {
   providers: [
@@ -18,7 +19,7 @@ export const nextAuthConfig: NextAuthOptions = {
       async authorize(credentials, req) {
         const creds = await loginSchema.parseAsync(credentials);
 
-        const user = await prisma?.user.findFirst({
+        const user = await prisma.user.findFirst({
           where: { email: creds.email },
         });
 
