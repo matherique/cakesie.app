@@ -11,14 +11,12 @@ import { FaMeteor } from "react-icons/fa";
 import Link from "next/link";
 
 function toRole(role: string): Role {
-  let res: Role = Role.CLIENT;
+  let res: Role = Role.ENPLOYEE
 
   if (Role.MANEGER === role) {
     res = Role.MANEGER;
   } else if (Role.ENPLOYEE === role) {
     res = Role.ENPLOYEE
-  } else {
-    res = Role.CLIENT;
   }
 
   return res
@@ -129,7 +127,6 @@ const EditarUsuario: NextPage = () => {
               defaultValue={toRole(user.role)}
             >
               <option>Escolha um nível de acesso</option>
-              <option value={Role.CLIENT}>Cliente</option>
               <option value={Role.ENPLOYEE}>Funcionário</option>
               <option value={Role.MANEGER}>Administrador</option>
             </select>

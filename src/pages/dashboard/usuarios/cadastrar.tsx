@@ -78,8 +78,8 @@ const CadastrarUsuario: NextPage = () => {
               {...register("role", { required: true })}
             >
               <option>Escolha um nível de acesso</option>
-              <option value={Role.CLIENT} selected>Cliente</option>
               <option value={Role.ENPLOYEE}>Funcionário</option>
+              <option value={Role.MANEGER}>Administrador</option>
             </select>
           </div>
           <div className="flex flex-col">

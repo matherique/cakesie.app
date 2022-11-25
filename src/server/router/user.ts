@@ -74,14 +74,13 @@ export const userRouter = createRouter()
     async resolve({ input }) {
       const hashed = await hash(input.password);
 
-      let role: Role = input.role as Role || Role.ENPLOYEE
 
       const user = await prisma?.user.create({
         data: {
           name: input.name,
           email: input.email,
           password: hashed,
-          role,
+          role: Role.ENPLOYEE,
         },
       });
 
