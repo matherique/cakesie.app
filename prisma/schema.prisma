@@ -38,27 +38,6 @@ model User {
     updatedAt DateTime @updatedAt
 }
 
-model Client {
-    id        String    @id @default(cuid())
-    name      String
-    phone     String
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    address   Address[]
-}
-
-model Address {
-    id        String   @id @default(cuid())
-    street    String
-    city      String
-    state     String
-    zip       String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    Client    Client?  @relation(fields: [clientId], references: [id])
-    clientId  String?
-}
-
 enum Role {
     ENPLOYEE
     MANEGER
