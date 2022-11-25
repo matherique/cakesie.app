@@ -9,8 +9,6 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 
 function getProfile(role: string) {
   switch (role) {
-    case Role.CLIENT:
-      return "Cliente";
     case Role.MANEGER:
       return "Administrador";
     case Role.ENPLOYEE:

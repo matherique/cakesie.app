@@ -13,14 +13,13 @@ generator client {
 }
 
 model Cake {
-    id           String         @id @default(cuid())
-    name         String
-    price        Float
-    description  String
-    cover_image  String?
-    status       Boolean        @default(true)
-    shoppingCart ShoppingCart[]
-    photos       Photos[]
+    id          String   @id @default(cuid())
+    name        String
+    price       Float
+    description String
+    cover_image String?
+    status      Boolean  @default(true)
+    photos      Photos[]
 }
 
 model Photos {

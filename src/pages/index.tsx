@@ -20,8 +20,8 @@ const Home: NextPage = () => {
     <section className="h-screen">
       <div className="container mx-auto px-6 py-12 h-full">
         <div className="flex justify-center items-center flex-wrap h-full g-6 text-gray-800">
-          <div className="md:w-8/12 lg:w-4/12 mb-6 md:mb-0">
-            <Image src={Logo} alt="logo" />
+          <div className="md:w-8/12 lg:w-3/12 mb-6 md:mb-0">
+            <Image src={Logo} alt="logo" className="w-full" />
             <h1 className="text-purple-600 text-3xl text-center mb-5">
               Painel Administrativo
             </h1>
