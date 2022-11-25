@@ -29,28 +29,37 @@ model Photos {
 }
 
 model User {
-    id        String         @id @default(cuid())
+    id        String   @id @default(cuid())
     name      String
-    email     String         @unique
+    email     String   @unique
     password  String
-    role      Role           @default(CLIENT)
-    createdAt DateTime       @default(now())
-    updatedAt DateTime       @updatedAt
-    Cart      ShoppingCart[]
+    role      Role     @default(ENPLOYEE)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
-model ShoppingCart {
-    id           String  @id @default(cuid())
-    user         User    @relation(fields: [userId], references: [id])
-    userId       String
-    observations String?
-    product      Cake    @relation(fields: [productId], references: [id])
-    productId    String
-    quantity     Int     @default(1)
+model Client {
+    id        String    @id @default(cuid())
+    name      String
+    phone     String
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    address   Address[]
+}
+
+model Address {
+    id        String   @id @default(cuid())
+    street    String
+    city      String
+    state     String
+    zip       String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    Client    Client?  @relation(fields: [clientId], references: [id])
+    clientId  String?
 }
 
 enum Role {
-    CLIENT
     ENPLOYEE
     MANEGER
 }
