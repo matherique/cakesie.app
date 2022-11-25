@@ -48,5 +48,15 @@
   - [ ] Listar items
   - [ ] Notificar quantidade baixa
 
+## Linguagem 2 
+
+ - [x] Criar outra tabela só para cliente 
+  - [ ] Adicionar crud de endereço 
+  - [ ] Adicioanr crud de cliente
+ - [ ] Remover "Cliente" das opções de roles da tabela de usuários
+ - [ ] Mecanismo de block de certas funções 
+ - [ ] Adicionar um logout 
+ - [ ] Adicionar editar do usuário logado
+ - [ ] Bloquear todas ações para usuario.role == "enployee"
       
     
