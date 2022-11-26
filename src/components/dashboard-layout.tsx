@@ -36,17 +36,6 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
             </li>
             <li>
               <Link
-                href="/dashboard/cliente/listar"
-                className="group flex items-center p-2 text-base font-normal text-purple-900 rounded-lg dark:text-white hover:bg-purple-100 dark:hover:bg-purple-300 hover:text-white"
-              >
-                <FaUserFriends size={26} color="#9333ea" />
-                <span className="flex-1 ml-3 whitespace-nowrap text-purple-800 group-hover:text-white">
-                  Clientes
-                </span>
-              </Link>
-            </li>
-            <li>
-              <Link
                 href="/dashboard/pedidos/criar"
                 className="group flex items-center p-2 text-base font-normal text-purple-900 rounded-lg dark:text-white hover:bg-purple-100 dark:hover:bg-purple-300 hover:text-white"
               >
