@@ -49,11 +49,7 @@
   - [ ] Notificar quantidade baixa
 
 ## Linguagem 2 
-
- - [x] Criar outra tabela só para cliente 
- - [ ] Mecanismo de block de certas funções 
- - [ ] Adicionar um logout 
- - [ ] Adicionar editar do usuário logado
- - [ ] Bloquear todas ações para usuario.role == "enployee"
       
+
+
     

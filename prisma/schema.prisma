@@ -20,6 +20,7 @@ model Cake {
     cover_image String?
     status      Boolean  @default(true)
     photos      Photos[]
+    Order       Order[]
 }
 
 model Photos {
@@ -38,7 +39,27 @@ model User {
     updatedAt DateTime @updatedAt
 }
 
+model Order {
+    id        String   @id @default(cuid())
+    cakeId    String
+    cake      Cake     @relation(fields: [cakeId], references: [id])
+    quantity  Int
+    client    String
+    address   String
+    phone     String
+    status    Status   @default(PENDING)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
 enum Role {
     ENPLOYEE
     MANEGER
+}
+
+enum Status {
+    PENDING
+    PREPARING
+    ONMYWAY
+    DELIVERED
 }
