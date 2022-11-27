@@ -6,6 +6,7 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
+import useAlert from "@hooks/useAlerts";
 
 type AddCake = CreateCakeSchemaType & {
   image: FileList
@@ -15,6 +16,7 @@ type AddCake = CreateCakeSchemaType & {
 const CadastrarBolo: NextPage = () => {
   const router = useRouter();
   const id = router.query.id as string
+  const { success } = useAlert()
 
   const {
     register,
@@ -43,8 +45,17 @@ const CadastrarBolo: NextPage = () => {
       photos_length: data.image.length,
       cover_image,
       files
-    }, { onSuccess: () => reset() })
-  }, [createCake, reset])
+    }, {
+      onSuccess: () => {
+        reset()
+        success("Bolo cadastrado com sucesso!")
+
+        if (!!router.query?.redirect) {
+          router.push(router.query?.redirect as string)
+        }
+      },
+    })
+  }, [createCake, reset, router, success])
 
   const inputStyle = useCallback((hasError: boolean) => {
     let style = `block w-full p-2 text-md font-normal text-gray-700 bg-white bg-clip-padding border border-solid rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-purple-600 focus:outline-none`

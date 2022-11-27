@@ -1,27 +1,32 @@
+import { toBRL } from "@shared/convert";
+import { trpc } from "@shared/trpc";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useReducer, useState } from "react";
 import { Title } from "./title";
 import { StepProps } from "./types";
 
 const EscolhaBoloStep: React.FC<StepProps> = ({ onNext, onPrev }) => {
+  const [query, setQuery] = useState("");
+  const router = useRouter()
+  const { data } = trpc.useQuery(["cake.getAll", { query }]);
+
   return (
-    <div className="grid grid-rows-layout gap-4">
+    <div className="grid grid-rows-layout">
       <Title step={2} />
-      <div>
-        <h1 className="font-bold text-xl">Dados do pedido:</h1>
-        <p>
-          <span className="font-bold">Nome: </span>Matheus Henrique dos Santods
-        </p>
-        <p>
-          <span className="font-bold">Telefone: </span>(12) 997713951
-        </p>
-      </div>
-      <div className="w-full flex gap-2 my-6">
+      <div className="w-full flex gap-2 my-4">
         <input
           className="w-full px-4 py-2 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-purple-600 focus:outline-none"
-          placeholder="digite o nome ou telefone do cliente"
+          placeholder="digite o nome do bolo"
+          onChange={(e) => setQuery(e.target.value)}
+          value={query}
         />
-        <button className="px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out">
+        <Link
+          href="/dashboard/bolos/cadastrar?redirect=/dashboard/pedidos/criar"
+          className="px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out"
+        >
           Adicionar
-        </button>
+        </Link>
       </div>
       <div className="w-full h-2/3">
         <table className="w-full table-auto">
@@ -33,26 +38,28 @@ const EscolhaBoloStep: React.FC<StepProps> = ({ onNext, onPrev }) => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Bolo de chocolate</td>
-              <td>R$ 1000,00</td>
-              <td>
-                <button className="px-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out">
-                  +
-                </button>
-              </td>
-            </tr>
+            {data?.map((cake) =>
+              <tr key={cake.id}>
+                <td>{cake.name}</td>
+                <td>{toBRL(cake.price)}</td>
+                <td>
+                  <button className="px-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out">
+                    +
+                  </button>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
       <div className="w-full flex justify-between self-end">
         <div className="self-end">
-          <button
+          {/* <button
             className="px-7 py-3 bg-purple-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out"
             onClick={onPrev}
           >
             Voltar
-          </button>
+          </button> */}
         </div>
         <div className="flex gap-1">
           <h1 className="font-bold text-2xl">Total: </h1>

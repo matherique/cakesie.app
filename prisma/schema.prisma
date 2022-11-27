@@ -13,14 +13,14 @@ generator client {
 }
 
 model Cake {
-    id          String   @id @default(cuid())
+    id          String      @id @default(cuid())
     name        String
     price       Float
     description String
     cover_image String?
-    status      Boolean  @default(true)
+    status      Boolean     @default(true)
     photos      Photos[]
-    Order       Order[]
+    OrderCake   OrderCake[]
 }
 
 model Photos {
@@ -40,16 +40,23 @@ model User {
 }
 
 model Order {
-    id        String   @id @default(cuid())
-    cakeId    String
-    cake      Cake     @relation(fields: [cakeId], references: [id])
+    id        String      @id @default(cuid())
     quantity  Int
     client    String
     address   String
     phone     String
-    status    Status   @default(PENDING)
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    status    Status      @default(PENDING)
+    createdAt DateTime    @default(now())
+    updatedAt DateTime    @updatedAt
+    OrderCake OrderCake[]
+}
+
+model OrderCake {
+    id      String @id @default(cuid())
+    orderId String
+    cakeId  String
+    order   Order  @relation(fields: [orderId], references: [id])
+    cake    Cake   @relation(fields: [cakeId], references: [id])
 }
 
 enum Role {

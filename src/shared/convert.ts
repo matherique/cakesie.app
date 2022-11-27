@@ -16,3 +16,7 @@ export async function fileListToArrayBuffer(files: FileList): Promise<ArrayBuffe
 export function toBase64(str: ArrayBuffer): string {
   return Buffer.from(str).toString('base64');
 }
+
+export function toBRL(value: number): string {
+  return value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+}

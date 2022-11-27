@@ -2,7 +2,6 @@ import DashboardLayout from "@components/dashboard-layout";
 import { NextPage } from "next";
 import * as React from "react";
 import EscolhaBoloStep from "./escolha-bolo";
-import EscolhaClienteStep from "./escolha-cliente";
 import { StepProps } from "./types";
 
 const CREATE_STEP_NUMBER = 5;
@@ -12,20 +11,13 @@ const GetStep: React.FC<
     step: number;
   } & StepProps
 > = ({ onNext, onPrev, step }) => {
-  let CurrentStep = EscolhaClienteStep;
+  let CurrentStep = EscolhaBoloStep
 
   switch (step) {
     case 1:
-      CurrentStep = EscolhaClienteStep;
+      CurrentStep = EscolhaBoloStep;
       break;
     case 2:
-      CurrentStep = EscolhaBoloStep;
-    case 3:
-      CurrentStep = EscolhaBoloStep;
-    case 4:
-      CurrentStep = EscolhaBoloStep;
-    case 5:
-      CurrentStep = EscolhaBoloStep;
       break;
   }
 
