@@ -21,6 +21,7 @@ const CadastrarUsuario: NextPage = () => {
   const { success, error } = useAlert()
 
   const onSubmit = useCallback(async (data: CreateUserType) => {
+    console.log(data)
     createUser(data, {
       onSuccess: () => {
         success("Usuário criado com sucesso!")
@@ -67,7 +68,7 @@ const CadastrarUsuario: NextPage = () => {
             <input
               type="password"
               id="password"
-              {...register("email", { required: true })}
+              {...register("password", { required: true })}
               className={inputStyle(!!errors.password)}
             />
           </div>
